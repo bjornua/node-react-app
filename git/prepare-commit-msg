@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Automatically adds branch name and branch description to every commit message.
+# Modified from the stackoverflow answer here: http://stackoverflow.com/a/11524807/151445
+#
+ 
+# Succeed on all merge messages, as evidenced by MERGE_MSG existing
+[ -f $GIT_DIR/MERGE_MSG ] && exit 0
+ 
+NAME=$(git branch | grep '*' | grep -o "[0-9]*")
+ 
+# Don't apply this logic if we are in a 'detached head' state (rebasing, read-only history, etc)
+# newlines below may need echo -e "\n\n: (etc.)"
+if [ "$NAME" == "(no branch)" ]; then
+    exit 0
+fi
+
+CONTENT=$(< $1)
+
+
+echo "#$NAME $CONTENT" > $1
