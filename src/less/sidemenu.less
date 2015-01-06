@@ -1,0 +1,60 @@
+.dh-sidemenu {
+    transition: width 500ms;
+    background: hsl(0, 0%, 10%);
+    font-size: 100%;
+    color: hsl(0, 0%, 80%);
+    height: 100%;
+    line-height: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    padding: 0;
+    position: fixed;
+    right: 0;
+    top: 0;
+    width: 0;
+    z-index: 2;
+    white-space: nowrap;
+
+    a {
+        display: block;
+        color: inherit;
+        text-decoration: none;
+        padding: 0.75em 1em;;
+        &:hover {
+            background: hsl(0, 0%, 20%);
+        }
+    }
+}
+
+
+@media(min-width: 40em) {
+    .dh-homemenu.pure-menu ul {
+        transition: opacity 500ms;
+        opacity: 1;
+    }
+    .dh-base {
+        transition: margin-right 500ms;
+    }
+    .dh-sidemenu-open {
+        .dh-homemenu.pure-menu ul {
+            opacity: 0;
+            pointer-events: none;
+        }
+        &.dh-base {
+            margin-right: 15em;
+        }
+        .dh-sidemenu {
+            width: 15em;
+        }
+    }
+}
+
+@media(max-width: 40em) {
+    .dh-sidemenu-open {
+        .dh-sidemenu {
+            width: 100%;
+        }
+
+    }
+}
