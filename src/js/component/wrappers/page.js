@@ -8,7 +8,7 @@ var env = require('../../env');
 
 var page = React.createClass({
     displayName: 'page',
-    mixins: [env.mixin()],
+    mixins: [env.mixin],
     statics: {
         parent: require('./base')
     },

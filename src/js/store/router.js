@@ -3,6 +3,7 @@ var createStore = require('dispatchr/utils/createStore');
 var UserStore = require('./user');
 var utils = require('../lib/utils');
 var Q = require('q');
+var env = require('../env.js');
 
 var RouterStore = createStore({
     storeName: 'router',
@@ -42,15 +43,22 @@ var RouterStore = createStore({
         this.key = match.key;
         this.params = match.params;
         this.url = match.url;
+        this.title = match.value.initialTitle();
         this.emitChange();
     },
-    reResolve: function () {
+    reResolve: function (stores) {
         'use strict';
-        var self = this;
-        self.resolveMatch(self.handler).done(function (new_match) {
-            self.putMatch(new_match);
-            self.emitChange();
-        });
+        stores = stores || [];
+        env.waitFor(this.dispatcher, stores).then(function () {
+            return this.handler;
+        }.bind(this)).then(this.resolveMatch.bind(this)).done(function (new_match) {
+            this.putMatch(new_match);
+            this.emitChange();
+        }.bind(this));
+    },
+    setTitle: function (payload) {
+        'use strict';
+        this.title = payload;
     },
     resolveMatch: function (handler) {
         'use strict';
@@ -73,6 +81,11 @@ var RouterStore = createStore({
     handlers: {
         navigate: 'navigate',
         navigateURL: 'navigateURL',
+        setTitle: 'setTitle'
+        signin: function () {
+            reResolve = 
+        },
+        signout: 'reResolve'
     }
 });
 

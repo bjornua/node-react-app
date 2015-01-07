@@ -6,7 +6,10 @@ var env = require('../../env');
 var RouterStore = require('../../store/router');
 
 module.exports = React.createClass({
-    mixins: [env.mixin([RouterStore])],
+    mixins: [env.mixin],
+    statics: {
+        stores: [RouterStore]
+    },
     render: function () {
         'use strict';
         var self = this;

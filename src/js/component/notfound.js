@@ -9,9 +9,10 @@ var RouterStore = require('../store/router');
 
 module.exports = React.createClass({
     displayName: 'notfound',
-    mixins: [env.mixin([RouterStore])],
+    mixins: [env.mixin],
     statics: {
         parent: require('../component/wrappers/page'),
+        stores: [RouterStore],
         initialTitle: function () {
             return 'Not found';
         }

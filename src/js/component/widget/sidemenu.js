@@ -9,7 +9,10 @@ var RouterStore = require('../../store/router');
 var _ = require('lodash');
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore, RouterStore])],
+    mixins: [env.mixin],
+    statics: {
+        stores: [UserStore, RouterStore]
+    },
     render: function () {
         var menu = [];
         var self = this;

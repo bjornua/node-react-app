@@ -9,8 +9,9 @@ var Q = require('q');
 
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore])],
+    mixins: [env.mixin],
     statics: {
+        stores: [UserStore],
         initialTitle: function () {
             return 'Page';
         },

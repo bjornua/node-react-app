@@ -12,7 +12,7 @@ module.exports = React.createClass({
         },
         parent: page
     },
-    mixins: [env.mixin()],
+    mixins: [env.mixin],
     getInitialState: function () {
         return {
             secondsElapsed: 0

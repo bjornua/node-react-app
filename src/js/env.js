@@ -1,45 +1,38 @@
 /*global module, require */
 
-var React = require('react');
-var Q = require('q');
-var _ = require('lodash');
-var RouterStore = require('./store/router');
-
-
-function create(initialURL) {
+(function (require, module) {
     'use strict';
-    var Dispatcher = require('./dispatcher');
-    var main_component = require('./main_component');
-    var urls = require('./urls');
 
-    var dispatcher = new Dispatcher({
-        urls: urls
-    });
-    var store = dispatcher.getStore(RouterStore);
+    var React = require('react');
+    var Q = require('q');
+    var _ = require('lodash');
+    var RouterStore = require('./store/router');
 
-    var deferred = Q.defer();
-    store.addChangeListener(deferred.resolve);
-    dispatcher.dispatch('navigateURL', {url: initialURL});
+    function create(initialURL) {
+        var Dispatcher = require('./dispatcher');
+        var main_component = require('./main_component');
+        var urls = require('./urls');
 
-    return deferred.promise.then(function () {
-        store.removeChangeListener(deferred.resolve);
-        return Q.try(function () {
-            return React.createElement(main_component, {dispatcher: dispatcher});
+        var dispatcher = new Dispatcher({
+            urls: urls
         });
-    });
-}
+        var store = dispatcher.getStore(RouterStore);
 
-function mixin(stores) {
-    'use strict';
-    if (stores === undefined) {
-        stores = [];
+        var deferred = Q.defer();
+        store.addChangeListener(deferred.resolve);
+        dispatcher.dispatch('navigateURL', {url: initialURL});
+
+        return deferred.promise.then(function () {
+            store.removeChangeListener(deferred.resolve);
+            return Q.try(function () {
+                return React.createElement(main_component, {dispatcher: dispatcher});
+            });
+        });
     }
-    return {
+
+    var mixin = {
         store: function (store) {
             return this.props.dispatcher.getStore(store);
-        },
-        redirect: function () {
-            return React.createElement();
         },
         dispatch: function (eventname, payload) {
             return this.props.dispatcher.dispatch(eventname, payload);
@@ -62,7 +55,7 @@ function mixin(stores) {
                     this.forceUpdate();
                 }
             };
-            _.forEach(stores, function (store) {
+            _.forEach(this.constructor.stores, function (store) {
                 this.addStoreListener(store, update);
             }, this);
         },
@@ -90,9 +83,19 @@ function mixin(stores) {
         }
 
     };
-}
 
-module.exports = {
-    create: create,
-    mixin: mixin
-};
+    function waitFor(dispatcher, storenames) {
+        var deferred = Q.defer();
+        dispatcher.waitFor(storenames, function () {
+            var stores = _.map(storenames, dispatcher.getStore, dispatcher);
+            deferred.resolve.apply(null, stores);
+        });
+        return deferred.promise;
+    }
+
+    module.exports = {
+        create: create,
+        mixin: mixin,
+        waitFor: waitFor
+    };
+}(require, module));

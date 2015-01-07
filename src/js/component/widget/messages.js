@@ -8,8 +8,7 @@ var MsgStore = require('../../store/messages');
 var _ = require('lodash');
 
 module.exports = React.createClass({
-    mixins: [env.mixin()],
-
+    mixins: [env.mixin],
     componentWillMount: function () {
         this.setState({
             hide: true

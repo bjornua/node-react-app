@@ -9,7 +9,7 @@ var UserStore = require('../store/user');
 
 module.exports = React.createClass({
     displayName: 'create_user',
-    mixins: [env.mixin()],
+    mixins: [env.mixin],
     statics: {
         initialTitle: function () {
             return 'Create User';

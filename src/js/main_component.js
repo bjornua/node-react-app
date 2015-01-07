@@ -3,11 +3,13 @@ var React = require('react');
 var env = require('./env');
 
 var RouterStore = require('./store/router');
-var TitleStore = require('./store/title');
 
 var  main_component = React.createClass({
     displayName: 'main_component',
-    mixins: [env.mixin([TitleStore])],
+    mixins: [env.mixin],
+    statics: {
+        stores: [RouterStore]
+    },
     componentDidMount: function () {
         'use strict';
         var self = this;
@@ -35,7 +37,7 @@ var  main_component = React.createClass({
             handler = handler.parent;
         }
 
-        var title = this.store(TitleStore).title + ' - dotarally.com';
+        var title = this.store(RouterStore).title + ' - GameIsReady';
         return React.createElement('html', {},
             React.createElement('head', {},
                 React.createElement('title', {}, title),

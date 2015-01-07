@@ -10,9 +10,10 @@ var env = require('../../env');
 var SidemenuStore = require('../../store/sidemenu');
 
 var base = React.createClass({
-    mixins: [env.mixin([SidemenuStore])],
     displayName: 'base',
-    componentDidMount: function () {
+    mixins: [env.mixin],
+    statics: {
+        stores: [SidemenuStore]
     },
     render: function () {
         var baseClasses = React.addons.classSet({

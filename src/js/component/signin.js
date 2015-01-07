@@ -6,24 +6,20 @@ var page = require('./wrappers/page');
 var link = require('./widget/link');
 var env = require('../env');
 var UserStore = require('../store/user');
-var Q = require('q');
+
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore])],
+    mixins: [env.mixin],
     statics: {
         initialTitle: function () {
             return 'Create User';
         },
         parent: page,
-        redirect: function (dispatcher) {
-            var store = dispatcher.getStore(UserStore);
-            return Q(function (resolve) {
-                dispatcher.waitFor([UserStore], resolve);
-            }).then(function () {
-                if (store.isAuthed === true) {
-                    return {key: 'user_home'};
-                }
-            });
+        stores: [UserStore],
+        redirect: function (data) {
+            if (data.isAuthed === true) {
+                return {key: 'user_home'};
+            }
         }
     },
     signin: function (e) {
