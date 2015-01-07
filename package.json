@@ -1,5 +1,5 @@
 {
-  "name": "dotarally",
+  "name": "node-react-app",
   "devDependencies": {
     "browserify": ">=7.0.0",
     "dispatchr": "^0.2.10",

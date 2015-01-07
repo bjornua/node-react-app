@@ -46,12 +46,10 @@ var RouterStore = createStore({
         this.title = match.value.initialTitle();
         this.emitChange();
     },
-    reResolve: function (stores) {
+    reResolve: function () {
         'use strict';
-        stores = stores || [];
-        env.waitFor(this.dispatcher, stores).then(function () {
-            return this.handler;
-        }.bind(this)).then(this.resolveMatch.bind(this)).done(function (new_match) {
+
+        this.resolveMatch.done(function (new_match) {
             this.putMatch(new_match);
             this.emitChange();
         }.bind(this));
@@ -59,33 +57,29 @@ var RouterStore = createStore({
     setTitle: function (payload) {
         'use strict';
         this.title = payload;
+        this.emitChange();
     },
     resolveMatch: function (handler) {
         'use strict';
-        var self = this;
 
         if (handler.redirect === undefined) {
             return Q.reject();
         }
 
-        return handler.redirect(self.dispatcher).then(function (payload) {
+        return handler.redirect(this.dispatcher).then(function (payload) {
             if (payload === undefined) {
                 return Q.reject();
             }
-            var match = self.getContext().urls.build(payload.key, payload.params);
-            return self.resolveMatch(match.value).catch(function () {
+            var match = this.getContext().urls.build(payload.key, payload.params);
+            return this.resolveMatch(match.value).catch(function () {
                 return match;
-            });
-        });
+            }.bind(this));
+        }.bind(this));
     },
     handlers: {
         navigate: 'navigate',
         navigateURL: 'navigateURL',
         setTitle: 'setTitle'
-        signin: function () {
-            reResolve = 
-        },
-        signout: 'reResolve'
     }
 });
 

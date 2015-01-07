@@ -36,7 +36,6 @@ var  main_component = React.createClass({
         while (handler.parent !== undefined) {
             handler = handler.parent;
         }
-
         var title = this.store(RouterStore).title + ' - GameIsReady';
         return React.createElement('html', {},
             React.createElement('head', {},

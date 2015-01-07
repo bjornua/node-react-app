@@ -15,11 +15,12 @@ module.exports = React.createClass({
             return 'Create User';
         },
         parent: page,
-        stores: [UserStore],
-        redirect: function (data) {
-            if (data.isAuthed === true) {
-                return {key: 'user_home'};
-            }
+        redirect: function (dispatcher) {
+            return env.waitFor(dispatcher, [UserStore]).then(function (userstore) {
+                if (userstore.isAuthed === true) {
+                    return {key: 'user_home'};
+                }
+            });
         }
     },
     signin: function (e) {
