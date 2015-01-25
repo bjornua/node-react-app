@@ -17,13 +17,9 @@ module.exports = React.createClass({
         parent: page,
         redirect: function (dispatcher) {
             var store = dispatcher.getStore(UserStore);
-            return Q(function (resolve) {
-                dispatcher.waitFor([UserStore], resolve);
-            }).then(function () {
-                if (store.isAuthed === true) {
-                    return {key: 'user_home'};
-                }
-            });
+            if (store.isAuthed === true) {
+                return {key: 'user_home'};
+            }
         }
     },
     signin: function (e) {

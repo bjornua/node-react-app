@@ -1,7 +1,5 @@
 /*global module, require, console */
 var createStore = require('dispatchr/utils/createStore');
-var RouterStore = require('./router');
-var UserStore = require('./user');
 
 module.exports = createStore({
     storeName: 'sidemenu',
@@ -12,9 +10,6 @@ module.exports = createStore({
     initialize: function () {
         'use strict';
         this.show = false;
-
-        this.getStore(RouterStore).addChangeListener(this.hidemenu.bind(this));
-        this.getStore(UserStore).addChangeListener(this.hidemenu.bind(this));
     },
     showmenu: function () {
         'use strict';

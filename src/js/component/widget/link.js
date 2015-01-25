@@ -3,10 +3,9 @@
 var React = require('react');
 var urls = require('../../urls');
 var env = require('../../env');
-var RouterStore = require('../../store/router');
 
 module.exports = React.createClass({
-    mixins: [env.mixin([RouterStore])],
+    mixins: [env.mixin()],
     render: function () {
         'use strict';
         var self = this;

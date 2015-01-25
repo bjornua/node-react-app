@@ -1,31 +1,26 @@
-/*global module, require, console */
-var createStore = require('dispatchr/utils/createStore');
-var RouterStore = require('./router');
+/*global module, require */
+module.exports = (function (require) {
+    'use strict';
+    var createStore = require('dispatchr/utils/createStore');
 
-module.exports = createStore({
-    storeName: 'title',
-    getStore: function (store) {
-        'use strict';
-        return this.dispatcher.getStore(store);
-    },
-    initialize: function () {
-        'use strict';
-        var self = this;
-        this.update();
-        this.getStore(RouterStore).addChangeListener(function () {
-            self.update();
-        });
-    },
-    update: function () {
-        'use strict';
-        this.title = this.getStore(RouterStore).handler.initialTitle();
-        this.emitChange();
-    },
-    handlers: {
-        'setTitle': function (payload) {
-            'use strict';
-            this.title = payload;
-            this.emitChange();
+    return createStore({
+        storeName: 'title',
+        initialize: function () {
+            this.title = null;
+        },
+        handlers: {
+            // navigate: function () {
+            //     this.title = null;
+            //     this.emitChange();
+            // },
+            // navigateURL: function () {
+            //     this.title = null;
+            //     this.emitChange();
+            // },
+            'setTitle': function (payload) {
+                this.title = payload;
+                this.emitChange();
+            }
         }
-    }
-});
+    });
+}(require));

@@ -5,11 +5,10 @@ var React = require('react');
 var link = require('./link');
 var env = require('../../env');
 var UserStore = require('../../store/user');
-var RouterStore = require('../../store/router');
 var _ = require('lodash');
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore, RouterStore])],
+    mixins: [env.mixin([UserStore])],
     render: function () {
         var menu = [];
         var self = this;
@@ -25,7 +24,7 @@ module.exports = React.createClass({
         }
 
         menu = _.map(menu, function (item) {
-            var isActive = this.store(RouterStore).key === item[1].dest;
+            var isActive = false; //this.store(RouterStore).key === item[1].dest;
             return React.createElement('li', {
                     key: item[0],
                     className: isActive ? "pure-menu-selected" : ''

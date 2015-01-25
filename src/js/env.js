@@ -3,7 +3,7 @@
 var React = require('react');
 var Q = require('q');
 var _ = require('lodash');
-var RouterStore = require('./store/router');
+var NavigationStore = require('./store/navigation');
 
 
 function create(initialURL) {
@@ -12,10 +12,8 @@ function create(initialURL) {
     var main_component = require('./main_component');
     var urls = require('./urls');
 
-    var dispatcher = new Dispatcher({
-        urls: urls
-    });
-    var store = dispatcher.getStore(RouterStore);
+    var dispatcher = new Dispatcher();
+    var store = dispatcher.getStore(NavigationStore);
 
     var deferred = Q.defer();
     store.addChangeListener(deferred.resolve);
@@ -24,7 +22,7 @@ function create(initialURL) {
     return deferred.promise.then(function () {
         store.removeChangeListener(deferred.resolve);
         return Q.try(function () {
-            return React.createElement(main_component, {dispatcher: dispatcher});
+            return React.createElement(main_component, {urls: urls, dispatcher: dispatcher});
         });
     });
 }
@@ -44,16 +42,13 @@ function mixin(stores) {
         dispatch: function (eventname, payload) {
             return this.props.dispatcher.dispatch(eventname, payload);
         },
-        addStoreListener: function (store, callback) {
-            var self = this;
+        listen: function (store, callback) {
             var f = function () {
-                callback.apply(self);
-            };
+                console.log('called');
+                callback.apply(this, []);
+            }.bind(this);
             this.listeners.push([store, f]);
             this.store(store).addChangeListener(f);
-        },
-        removeStoreListener: function (store, callback) {
-            this.store(store).removeChangeListener(callback);
         },
         componentDidMount: function () {
             this.listeners = [];
@@ -63,12 +58,14 @@ function mixin(stores) {
                 }
             };
             _.forEach(stores, function (store) {
-                this.addStoreListener(store, update);
+                this.listen(store, update);
             }, this);
         },
         componentWillUnmount: function () {
             _.forEach(this.listeners, function (listener) {
-                this.removeStoreListener(listener[0], listener[1]);
+                var store = listener[0];
+                var callback = listener[1];
+                this.store(store).removeChangeListener(callback);
             }, this);
 
         },

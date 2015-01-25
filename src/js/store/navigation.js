@@ -1,4 +1,43 @@
-/*global module, require, console */
+/*global module, require */
+
+
+
+
+module.exports = function () {
+    'use strict';
+
+    var Reflux = require('reflux');
+    var urls = require('../urls');
+
+    var actions = Reflux.createActions(['setView', 'setURL']);
+    var store = Reflux.createStore({
+        onSetView: function (payload) {
+            var match = urls.build(payload.key, payload.params);
+            this.triggerMatch(match);
+        },
+        onSetURL: function (payload) {
+            var match = this.getContext().urls.match(payload.url);
+            this.triggerMatch(match);
+        },
+        triggerMatch: function (match) {
+            this.trigger({
+                handler: match.value,
+                key: match.key,
+                params: match.params,
+                url: match.url
+            });
+            this.trigger(match);
+        }
+    });
+
+    return {
+        name: 'navigation',
+        actions: actions,
+        store: store
+    };
+};
+
+/*
 var createStore = require('dispatchr/utils/createStore');
 var UserStore = require('./user');
 var utils = require('../lib/utils');
@@ -72,8 +111,10 @@ var RouterStore = createStore({
     },
     handlers: {
         navigate: 'navigate',
-        navigateURL: 'navigateURL',
+        navigateURL: 'navigateURL'
     }
 });
 
 module.exports = RouterStore;
+
+*/

@@ -13,7 +13,6 @@ module.exports = createStore({
         this.current = null;
         this.queue = [];
 
-
         var user = this.getStore(UserStore);
         user.addChangeListener(function () {
             if (user.isAuthed) {
@@ -48,7 +47,6 @@ module.exports = createStore({
                 this.current = next;
             }
             this.emitChange();
-
         }
     }
 });

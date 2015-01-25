@@ -15,6 +15,7 @@ function format(msg) {
     msg = _.flatten(msg);
     return msg.join("");
 }
+
 function assert(condition) {
     var args = _.toArray(arguments).slice(1);
     if (condition === false || condition === undefined) {
