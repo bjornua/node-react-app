@@ -38,33 +38,38 @@
     };
 
     exports.listenerEmpty = function (test) {
-        var state = Dispatcher.create({});
+        var state = Dispatcher.create([]);
         test.equal(state.listeners.size, 0);
         test.equal(state.emitters.size, 0);
         test.equal(state.actions.size, 0);
         test.done();
     };
-    // exports.listenerMissingDeps = function (test) {
-    //     var state = Dispatcher.create();
-    //     test.throws(function () {
-    //         Dispatcher.listen(state, 'A', [], noop);
-    //     }, Error);
-    //     test.done();
-    // };
+    exports.listenerMissingDeps = function (test) {
+        test.throws(function () {
+            Dispatcher.create([[]]);
+        }, /^Listens must be a non-empty array\.$/);
 
-    // exports.listenerAdd = function (test) {
-    //     var state = Dispatcher.create();
+        test.throws(function () {
+            Dispatcher.create([['A', [], noop]]);
+        }, /^Listens must be a non-empty array\.$/);
+        test.done();
+    };
 
-    //     state = Dispatcher.listen(state, 'A', ['B'], noop);
-    //     var listeners = state.listeners;
-    //     test.strictEqual(listeners.size, 1);
-    //     test.strictEqual(listeners.has('B'), true);
-    //     test.strictEqual(listeners.has('A'), false);
-    //     test.strictEqual(listeners.get('B').size, 1);
-    //     test.strictEqual(listeners.getIn(['B', 0, 'target']), 'A');
-
-    //     test.done();
-    // };
+    exports.oneListener = function (test) {
+        var state = Dispatcher.create([['A', ['B'], noop]]);
+        var listeners = state.listeners;
+        var emitters = state.emitters;
+        test.strictEqual(listeners.size, 1);
+        test.strictEqual(listeners.has('B'), true);
+        test.strictEqual(listeners.has('A'), false);
+        test.strictEqual(listeners.get('B').size, 1);
+        test.strictEqual(listeners.getIn(['B', 0, 'emits']), 'A');
+        test.strictEqual(emitters.size, 1);
+        test.strictEqual(emitters.has('B'), false);
+        test.strictEqual(emitters.has('A'), true);
+        test.strictEqual(emitters.getIn(['A', 0, 'emits']), 'A');
+        test.done();
+    };
 
     // exports.listenerCycle1 = function (test) {
     //     var state = Dispatcher.create();
