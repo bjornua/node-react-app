@@ -59,6 +59,7 @@
         var state = Dispatcher.create([['A', ['B'], noop]]);
         var listeners = state.listeners;
         var emitters = state.emitters;
+        var actions = state.actions;
         test.strictEqual(listeners.size, 1);
         test.strictEqual(listeners.has('B'), true);
         test.strictEqual(listeners.has('A'), false);
@@ -68,18 +69,20 @@
         test.strictEqual(emitters.has('B'), false);
         test.strictEqual(emitters.has('A'), true);
         test.strictEqual(emitters.getIn(['A', 0, 'emits']), 'A');
+        test.strictEqual(actions.has('B'), true);
+        test.strictEqual(actions.get('B').size, 1);
+        test.strictEqual(actions.getIn(['B', 0, 'emits']), 'A');
         test.done();
     };
 
-    // exports.listenerCycle1 = function (test) {
-    //     var state = Dispatcher.create();
+    exports.listenerCycle1 = function (test) {
+        var state = Dispatcher.create([['A', ['A'], noop]]);
 
-    //     test.throws(function () {
-    //         Dispatcher.listen(state, 'A', ['A'], noop);
-    //     }, Error);
-
-    //     test.done();
-    // };
+        // test.throws(function () {
+        // }, Error);
+        test.done();
+        // test.done();
+    };
 
     // exports.listenerCycle2 = function (test) {
     //     var state = Dispatcher.create();
@@ -108,26 +111,27 @@
 
     //     test.done();
     // };
-    // exports.dispatchTwo = function (test) {
-    //     var state = Dispatcher.create();
-    //     state = Dispatcher.listen(state, 'A', ['action'], function () { return 1; });
-    //     state = Dispatcher.listen(state, 'B', ['action'], function () { return 2; });
+    exports.dispatchTwo = function (test) {
+        var state = Dispatcher.create([
+            ['A', ['action'], function () { return 1; }],
+            ['B', ['action', 'A'], function () { return 2; }],
+        ]);
 
-    //     var emits = Dispatcher.dispatch(state, 'action', {});
-    //     test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1, 'B': 2})), true);
+        // var emits = Dispatcher.dispatch(state, 'action', {});
+        // test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1, 'B': 2})), true);
 
-    //     test.done();
-    // };
-    // exports.dispatchNonExistingDep = function (test) {
-    //     var state = Dispatcher.create();
-    //     // There is no B
-    //     state = Dispatcher.listen(state, 'A', ['action', 'B'], function () { return 1; });
+        test.done();
+    };
+    exports.dispatchNonExistingDep = function (test) {
+        var state = Dispatcher.create([
+            ['A', ['action', 'B'], function () { return 1; }]
+        ]);
 
-    //     var emits = Dispatcher.dispatch(state, 'action', {});
-    //     test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1})), true);
+        // var emits = Dispatcher.dispatch(state, 'action', {});
+        // test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1})), true);
 
-    //     test.done();
-    // };
+        test.done();
+    };
     // exports.dispatchDupe = function (test) {
     //     var state = Dispatcher.create();
     //     state = Dispatcher.listen(state, 'A', ['action'], function () { return 1; });

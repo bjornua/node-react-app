@@ -2,6 +2,7 @@
 (function (module) {
     'use strict';
     var Immutable = require('immutable');
+    var toposort = require('toposort');
     // var utils = require('./utils');
 
     var initState = new (Immutable.Record({
@@ -95,12 +96,16 @@
     //     return dispatchState.emitted;
     // };
     var generateQueue = function (action, listeners, emitters) {
-        var emitted = Immutable.Set.of(action);
         var omitted = Immutable.Set();
+        var emitted = Immutable.Set.of(action);
         var waiting = Immutable.Stack(listeners.get(action));
         var queue = Immutable.List();
 
-        var current, depsUnresolved;
+        var isAction = function(key) {
+            return !emitters.has(key);
+        };
+
+        var current, depsUnresolved, otherActions;
         while (!waiting.isEmpty()) {
             current = waiting.first();
             waiting = waiting.shift();
@@ -108,22 +113,39 @@
             depsUnresolved = current.listens.subtract(emitted);
             depsUnresolved = depsUnresolved.subtract(omitted);
 
-            if (!depsUnresolved.isEmpty()) {
+            otherActions = depsUnresolved.filter(isAction);
+            omitted = omitted.add(otherActions);
+            // console.log(depsUnresolved);
+            depsUnresolved = depsUnresolved.subtract(otherActions);
+
+
+
+            if (depsUnresolved.isEmpty()) {
+                if (emitted.has(current.emits)) {
+                    console.log(current.emits + ' Emits too much');
+                }
                 queue = queue.push(current);
                 emitted = emitted.add(current.emits);
+                waiting = waiting.unshiftAll(
+                    listeners.get(current.emits)
+                );
+            } else {
+                console.log('hey');
+                waiting = waiting.unshiftAll(
+                    emitters.get(depsUnresolved.first())
+                );
+
             }
         }
         return queue;
     };
 
-    var create = function (nodes) {
+    var create = function (nodesData) {
         var state = initState;
         var listeners = state.listeners;
         var emitters = state.emitters;
         var actions = state.actions;
-
-        Immutable.fromJS(nodes).forEach(function (nodeData) {
-            nodeData = Immutable.fromJS(nodeData);
+        Immutable.fromJS(nodesData).forEach(function (nodeData) {
             var node = new DispatchNode();
             node = node.set('emits', nodeData.get(0));
 
@@ -134,21 +156,25 @@
             if (node.emits === undefined) {
                 throw new Error('Missing emit target.');
             }
-
             node.listens.forEach(function (emitter) {
                 listeners = listeners.update(emitter, Immutable.List(), function (l) {
                     return l.unshift(node);
                 });
             });
-
             emitters = emitters.update(node.emits, Immutable.List(), function (l) {
                 return l.unshift(node);
             });
         });
         var actionKeys = Immutable.Set(listeners.keys()).subtract(emitters.keys());
-
         actionKeys.forEach(function (actionName) {
             actions = actions.set(actionName, generateQueue(actionName, listeners, emitters));
+        });
+
+        actions.forEach(function(val, key) {
+            console.log('--- ' + key + ' ---');
+            val.forEach(function (val) {
+                console.log(val.emits);
+            });
         });
 
         return state.merge({
