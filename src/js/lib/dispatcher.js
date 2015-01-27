@@ -19,17 +19,18 @@
         callback: undefined
     });
 
-    var findCycle = function (target, getDeps) {
+    var traverse = function (node, getKey, getChildren) {
         var touched = Immutable.Set();
 
-        var find = function (target) {
-            if (touched.has(target)) {
-                return Immutable.List.of(target);
+        var traverse2 = function (node) {
+            var key = getKey(node);
+            if (touched.has(key)) {
+                return Immutable.List.of(key);
             }
-            touched = touched.add(target);
+            touched = touched.add(key);
 
             var cycle;
-            getDeps(target).forEach(function (dep) {
+            getChildren(node).forEach(function (dep) {
                 cycle = find(dep);
                 if (cycle !== undefined) {
                     cycle = cycle.unshift(target);
@@ -38,70 +39,16 @@
             });
             return cycle;
         };
-        return find(target);
+        return traverse2(target);
     };
 
-    // var create = function (state, target, dependencies, callback) {
-    //     dependencies = Immutable.fromJS(dependencies).toSet();
-    //     var listeners = state.listeners;
-    //     var emitters = state.emitters;
-
-
-    //     emitters = emitters.update(target, Immutable.List(), function (l) {
-    //         return l.unshift(listener);
-    //     });
-    //     dependencies.forEach(function (dep) {
-    //         listeners = listeners.update(dep, Immutable.List(), function (l) {
-    //             return l.unshift(listener);
-    //         });
-    //     });
-
-    //     var cycle = findCycle(target, function (target) {
-    //         return listeners.get(target, Immutable.List()).map(function (l) {
-    //             return l.target;
-    //         });
-    //     });
-
-    //     if (cycle !== undefined) {
-    //         var err = new Error(utils.format(
-    //             '{} cannot have dependency {}. Cycle: {}',
-    //             cycle.get(-1),
-    //             cycle.get(-2),
-    //             cycle.join(" ← ")
-    //         ));
-    //         err.cycle = cycle;
-    //         throw err;
-    //     }
-    //     return state.merge({
-    //         listeners: listeners,
-    //         emitters: emitters
-    //     });
-    // };
-
-    // var dispatch = function (state, action, payload) {
-    //     var listeners = state.listeners;
-    //     utils.assert(listeners.has(action), 'Action {} does not exist', action);
-
-    //     var dispatchState = new DispatchState({
-    //         waiting: Immutable.Stack(listeners.get(action)),
-    //         emitted: Immutable.Map().set(action, Immutable.fromJS(payload));
-    //     });
-
-    //     var current;
-    //     while (!dispatchState.waiting.isEmpty()) {
-    //         current = dispatchState.waiting.first();
-    //         dispatchState = dispatchState.set('waiting', dispatchState.waiting.shift());
-    //         dispatchState = iterateWaiting(current, state, dispatchState);
-    //     }
-    //     return dispatchState.emitted;
-    // };
     var generateQueue = function (action, listeners, emitters) {
         var omitted = Immutable.Set();
         var emitted = Immutable.Set.of(action);
         var waiting = Immutable.Stack(listeners.get(action));
         var queue = Immutable.List();
 
-        var isAction = function(key) {
+        var isAction = function (key) {
             return !emitters.has(key);
         };
 
