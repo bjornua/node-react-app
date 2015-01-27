@@ -35,33 +35,30 @@
         return visited;
     };
 
-    var getEmitters = function (nodes) {
-        var visited = Immutable.OrderedSet();
-        var waiting = Immutable.Stack.of(action);
-        var node;
-        while (!waiting.isEmpty()) {
-            node = waiting.first();
-            waiting = waiting.shift();
-
-            if (!visited.has(node)) {
-                visited = visited.add(node);
-                waiting = waiting.unshiftAll(listeners.get(node.emits, Immutable.List()));
-            }
-        }
-        return emitters;
-    };
-
     var generateQueue = function (action, listeners) {
         var nodes = getTotalListeningNodes(action, listeners);
         var emitters = Immutable.Set();
+        var queue = Immutable.List();
         nodes.forEach(function (node) {
             if (emitters.has(node.emits)) {
                 throw new Error(utils.format("{}: {} emits twice", action, node.emits));
             }
             emitters = emitters.add(node.emits);
         });
-
-
+        var isReady = function (node) {
+            return emitters.intersect(node.listens).isEmpty();
+        };
+        var node;
+        while (!nodes.isEmpty()) {
+            node = nodes.find(isReady);
+            if (node === undefined) {
+                throw new Error(utils.format('Cycle detected in {}', action));
+            }
+            nodes = nodes.remove(node);
+            emitters = emitters.remove(node.emits);
+            queue = queue.push(node);
+        }
+        return queue;
     };
 
     var create = function (nodesData) {
@@ -80,10 +77,6 @@
             if (node.emits === undefined) {
                 throw new Error('Missing emit target.');
             }
-            if (node.listens.some(function (dep) { return dep === node.emits; })) {
-                throw new Error(utils.format('{} Cannot listen to {}.', node.emits, node.emits));
-            }
-
             node.listens.forEach(function (emitter) {
                 listeners = listeners.update(emitter, Immutable.List(), function (l) {
                     return l.unshift(node);

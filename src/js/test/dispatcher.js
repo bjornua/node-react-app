@@ -78,29 +78,28 @@
 
     exports.listenerCycle1 = function (test) {
         test.throws(function () {
-            Dispatcher.create([['A', ['A'], noop]]);
-        }, /"A" Cannot listen to "A"\./);
+            Dispatcher.create([['A', ['A', 'action1'], noop]]);
+        }, /^Cycle detected in "action1"$/);
         test.done();
     };
 
-    // exports.listenerCycle2 = function (test) {
-    //     var state = Dispatcher.create();
+    exports.listenerCycle2 = function (test) {
+        test.throws(function () {
+            Dispatcher.create([
+                ['A', ['action2', 'B'], noop],
+                ['B', ['A'], noop]
+            ]);
+        }, /^Cycle detected in "action2"$/);
+        test.done();
+    };
+    exports.dispatchNonExisting = function (test) {
+        var state = Dispatcher.create([]);
 
-    //     state = Dispatcher.listen(state, 'A', ['B'], noop);
-
-    //     test.throws(function () {
-    //         Dispatcher.listen(state, 'B', ['A'], noop);
-    //     }, Error);
-    //     test.done();
-    // };
-    // exports.dispatchNonExisting = function (test) {
-    //     var state = Dispatcher.create();
-
-    //     test.throws(function () {
-    //         Dispatcher.dispatch(state, 'action', {});
-    //     });
-    //     test.done();
-    // };
+        Dispatcher.dispatch(state, 'action', {});
+        test.throws(function () {
+        }, /^Action "action" is not handled$/);
+        test.done();
+    };
     // exports.dispatchOne = function (test) {
     //     var state = Dispatcher.create();
     //     state = Dispatcher.listen(state, 'A', ['action'], function () { return 1; });
@@ -132,16 +131,14 @@
 
         test.done();
     };
-    // exports.dispatchDupe = function (test) {
-    //     var state = Dispatcher.create();
-    //     state = Dispatcher.listen(state, 'A', ['action'], function () { return 1; });
-    //     state = Dispatcher.listen(state, 'B', ['action', 'A'], function () { return 1; });
-    //     state = Dispatcher.listen(state, 'C', ['action', 'A'], function () { return 1; });
-    //     state = Dispatcher.listen(state, 'B', ['action', 'C'], function () { return 2; });
+    exports.dispatchDupe = function (test) {
+        test.throws(function () {
+            Dispatcher.create([
+                ['A', ['action'], function () { return 1; }],
+                ['A', ['action'], function () { return 1; }]
+            ]);
+        }, /^"action": "A" emits twice$/);
 
-    //     var emits = Dispatcher.dispatch(state, 'action', {});
-    //     test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1})), true);
-
-    //     test.done();
-    // };
+        test.done();
+    };
 }(module.exports));
