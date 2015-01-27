@@ -6,36 +6,36 @@
 
     var noop = function () { return; };
 
-    exports.findCycle = function (test) {
-        var getter = function (table) {
-            table = Immutable.fromJS(table);
-            return function (x) {
-                return table.get(x, Immutable.List());
-            };
-        };
-        var getDeps;
+    // exports.findCycle = function (test) {
+    //     var getter = function (table) {
+    //         table = Immutable.fromJS(table);
+    //         return function (x) {
+    //             return table.get(x, Immutable.List());
+    //         };
+    //     };
+    //     var getDeps;
 
-        getDeps = getter({});
-        test.strictEqual(Dispatcher.findCycle('A', getDeps), undefined);
+    //     getDeps = getter({});
+    //     test.strictEqual(Dispatcher.findCycle('A', getDeps), undefined);
 
-        function t(target, table, expected) {
-            var result = Dispatcher.findCycle(target, getter(table));
-            if (expected === undefined) {
-                test.strictEqual(result, undefined);
-                return;
-            }
-            expected = Immutable.fromJS(expected);
-            test.strictEqual(result.equals(expected), true);
-        }
-        t('A', {}, undefined);
-        t('G', {A: ['G', 'I'], G: ['H']}, undefined);
-        t('A', {A: ['A']}, ['A', 'A']);
-        t('A', {A: ['B'], B: ['A']}, ['A', 'B', 'A']);
-        t('B', {A: ['B'], B: ['A']}, ['B', 'A', 'B']);
-        t('C', {A: ['C'], B: ['A'], C: ['B']}, ['C', 'B', 'A', 'C']);
+    //     function t(target, table, expected) {
+    //         var result = Dispatcher.findCycle(target, getter(table));
+    //         if (expected === undefined) {
+    //             test.strictEqual(result, undefined);
+    //             return;
+    //         }
+    //         expected = Immutable.fromJS(expected);
+    //         test.strictEqual(result.equals(expected), true);
+    //     }
+    //     t('A', {}, undefined);
+    //     t('G', {A: ['G', 'I'], G: ['H']}, undefined);
+    //     t('A', {A: ['A']}, ['A', 'A']);
+    //     t('A', {A: ['B'], B: ['A']}, ['A', 'B', 'A']);
+    //     t('B', {A: ['B'], B: ['A']}, ['B', 'A', 'B']);
+    //     t('C', {A: ['C'], B: ['A'], C: ['B']}, ['C', 'B', 'A', 'C']);
 
-        test.done();
-    };
+    //     test.done();
+    // };
 
     exports.listenerEmpty = function (test) {
         var state = Dispatcher.create([]);
@@ -56,32 +56,31 @@
     };
 
     exports.oneListener = function (test) {
-        var state = Dispatcher.create([['A', ['B'], noop]]);
+        var state = Dispatcher.create([['A', ['action'], noop]]);
         var listeners = state.listeners;
         var emitters = state.emitters;
         var actions = state.actions;
         test.strictEqual(listeners.size, 1);
-        test.strictEqual(listeners.has('B'), true);
+        test.strictEqual(listeners.has('action'), true);
         test.strictEqual(listeners.has('A'), false);
-        test.strictEqual(listeners.get('B').size, 1);
-        test.strictEqual(listeners.getIn(['B', 0, 'emits']), 'A');
+        test.strictEqual(listeners.get('action').size, 1);
+        test.strictEqual(listeners.getIn(['action', 0, 'emits']), 'A');
         test.strictEqual(emitters.size, 1);
-        test.strictEqual(emitters.has('B'), false);
+        test.strictEqual(emitters.has('action'), false);
         test.strictEqual(emitters.has('A'), true);
         test.strictEqual(emitters.getIn(['A', 0, 'emits']), 'A');
-        test.strictEqual(actions.has('B'), true);
-        test.strictEqual(actions.get('B').size, 1);
-        test.strictEqual(actions.getIn(['B', 0, 'emits']), 'A');
+        test.strictEqual(actions.has('action'), true);
+        test.strictEqual(actions.get('action').size, 2);
+        test.strictEqual(actions.getIn(['action', 0, 'emits']), 'action');
+        test.strictEqual(actions.getIn(['action', 1, 'emits']), 'A');
         test.done();
     };
 
     exports.listenerCycle1 = function (test) {
-        var state = Dispatcher.create([['A', ['A'], noop]]);
-
-        // test.throws(function () {
-        // }, Error);
+        test.throws(function () {
+            Dispatcher.create([['A', ['A'], noop]]);
+        }, /"A" Cannot listen to "A"\./);
         test.done();
-        // test.done();
     };
 
     // exports.listenerCycle2 = function (test) {
@@ -114,11 +113,12 @@
     exports.dispatchTwo = function (test) {
         var state = Dispatcher.create([
             ['A', ['action'], function () { return 1; }],
-            ['B', ['action', 'A'], function () { return 2; }],
+            ['B', ['action', 'A'], function () { return 2; }]
         ]);
-
-        // var emits = Dispatcher.dispatch(state, 'action', {});
-        // test.strictEqual(emits.equals(Immutable.fromJS({'action': {}, 'A': 1, 'B': 2})), true);
+        var action = state.actions.get('action');
+        test.strictEqual(action.get(0).emits, 'action');
+        test.strictEqual(action.get(1).emits, 'A');
+        test.strictEqual(action.get(2).emits, 'B');
 
         test.done();
     };

@@ -2,7 +2,7 @@
 (function (module) {
     'use strict';
     var Immutable = require('immutable');
-    // var utils = require('./utils');
+    var utils = require('./utils');
 
     var initState = new (Immutable.Record({
         stores: Immutable.Map(),
@@ -18,72 +18,50 @@
         callback: undefined
     });
 
-    var traverse = function (rootNode, getKey, getChildren) {
-        var touched = Immutable.Set();
-        var result = Immutable.List();
-        var waiting = Immutable.Stack.of(rootNode);
-
-        var node, key;
+    var getTotalListeningNodes = function (action, listeners) {
+        action = new DispatchNode({'emits': action});
+        var visited = Immutable.OrderedSet();
+        var waiting = Immutable.Stack.of(action);
+        var node;
         while (!waiting.isEmpty()) {
             node = waiting.first();
             waiting = waiting.shift();
 
-            result = result.push(node);
-            waiting = waiting.unshift(getChildren(node));
-
-            key = getKey(node);
-            if (touched.has(key)) {
-                throw new Error('Cycle detected');
+            if (!visited.has(node)) {
+                visited = visited.add(node);
+                waiting = waiting.unshiftAll(listeners.get(node.emits, Immutable.List()));
             }
-            touched = touched.add(key);
         }
-        return result;
+        return visited;
     };
 
-    var generateQueue = function (action, listeners, emitters) {
-        var omitted = Immutable.Set();
-        var emitted = Immutable.Set.of(action);
-        var waiting = Immutable.Stack(listeners.get(action));
-        var queue = Immutable.List();
+    var getEmitters = function (nodes) {
+        var visited = Immutable.OrderedSet();
+        var waiting = Immutable.Stack.of(action);
+        var node;
+        while (!waiting.isEmpty()) {
+            node = waiting.first();
+            waiting = waiting.shift();
 
-        var isAction = function (key) {
-            return !emitters.has(key);
-        };
+            if (!visited.has(node)) {
+                visited = visited.add(node);
+                waiting = waiting.unshiftAll(listeners.get(node.emits, Immutable.List()));
+            }
+        }
+        return emitters;
+    };
 
-        var current, depsUnresolved, otherActions;
-        // while (!waiting.isEmpty()) {
-        //     current = waiting.first();
-        //     waiting = waiting.shift();
-
-        //     depsUnresolved = current.listens.subtract(emitted);
-        //     depsUnresolved = depsUnresolved.subtract(omitted);
-
-        //     otherActions = depsUnresolved.filter(isAction);
-        //     omitted = omitted.add(otherActions);
-        //     // console.log(depsUnresolved);
-        //     depsUnresolved = depsUnresolved.subtract(otherActions);
+    var generateQueue = function (action, listeners) {
+        var nodes = getTotalListeningNodes(action, listeners);
+        var emitters = Immutable.Set();
+        nodes.forEach(function (node) {
+            if (emitters.has(node.emits)) {
+                throw new Error(utils.format("{}: {} emits twice", action, node.emits));
+            }
+            emitters = emitters.add(node.emits);
+        });
 
 
-
-        //     if (depsUnresolved.isEmpty()) {
-        //         if (emitted.has(current.emits)) {
-        //             console.log(current.emits + ' Emits too much');
-        //         }
-        //         queue = queue.push(current);
-        //         emitted = emitted.add(current.emits);
-        //         waiting = waiting.unshiftAll(
-        //             listeners.get(current.emits)
-        //         );
-        //     } else {
-        //         console.log('hey');
-        //         waiting = waiting.unshiftAll(
-        //             emitters.get(depsUnresolved.first())
-        //         );
-
-        //     }
-        // }
-        traverse(''
-        return queue;
     };
 
     var create = function (nodesData) {
@@ -102,6 +80,10 @@
             if (node.emits === undefined) {
                 throw new Error('Missing emit target.');
             }
+            if (node.listens.some(function (dep) { return dep === node.emits; })) {
+                throw new Error(utils.format('{} Cannot listen to {}.', node.emits, node.emits));
+            }
+
             node.listens.forEach(function (emitter) {
                 listeners = listeners.update(emitter, Immutable.List(), function (l) {
                     return l.unshift(node);
@@ -116,11 +98,14 @@
             actions = actions.set(actionName, generateQueue(actionName, listeners, emitters));
         });
 
-        actions.forEach(function(val, key) {
-            console.log('--- ' + key + ' ---');
+        actions.forEach(function (val, key) {
+            console.log()
+            console.log('------- ' + key + ' -------');
             val.forEach(function (val) {
-                console.log(val.emits);
+                console.log(val.emits + ' ← ' + val.listens.join(', '));
             });
+            console.log('----- END ' + key + ' -----');
+            console.log()
         });
 
         return state.merge({
@@ -132,7 +117,7 @@
 
 
     module.exports = {
-        create: create,
+        create: create
         // dispatch: dispatch,
         // findCycle: findCycle
         // listen: listen
