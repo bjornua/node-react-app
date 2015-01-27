@@ -2,7 +2,6 @@
 (function (module) {
     'use strict';
     var Immutable = require('immutable');
-    var toposort = require('toposort');
     // var utils = require('./utils');
 
     var initState = new (Immutable.Record({
@@ -19,27 +18,26 @@
         callback: undefined
     });
 
-    var traverse = function (node, getKey, getChildren) {
+    var traverse = function (rootNode, getKey, getChildren) {
         var touched = Immutable.Set();
+        var result = Immutable.List();
+        var waiting = Immutable.Stack.of(rootNode);
 
-        var traverse2 = function (node) {
-            var key = getKey(node);
+        var node, key;
+        while (!waiting.isEmpty()) {
+            node = waiting.first();
+            waiting = waiting.shift();
+
+            result = result.push(node);
+            waiting = waiting.unshift(getChildren(node));
+
+            key = getKey(node);
             if (touched.has(key)) {
-                return Immutable.List.of(key);
+                throw new Error('Cycle detected');
             }
             touched = touched.add(key);
-
-            var cycle;
-            getChildren(node).forEach(function (dep) {
-                cycle = find(dep);
-                if (cycle !== undefined) {
-                    cycle = cycle.unshift(target);
-                    return false;
-                }
-            });
-            return cycle;
-        };
-        return traverse2(target);
+        }
+        return result;
     };
 
     var generateQueue = function (action, listeners, emitters) {
@@ -53,37 +51,38 @@
         };
 
         var current, depsUnresolved, otherActions;
-        while (!waiting.isEmpty()) {
-            current = waiting.first();
-            waiting = waiting.shift();
+        // while (!waiting.isEmpty()) {
+        //     current = waiting.first();
+        //     waiting = waiting.shift();
 
-            depsUnresolved = current.listens.subtract(emitted);
-            depsUnresolved = depsUnresolved.subtract(omitted);
+        //     depsUnresolved = current.listens.subtract(emitted);
+        //     depsUnresolved = depsUnresolved.subtract(omitted);
 
-            otherActions = depsUnresolved.filter(isAction);
-            omitted = omitted.add(otherActions);
-            // console.log(depsUnresolved);
-            depsUnresolved = depsUnresolved.subtract(otherActions);
+        //     otherActions = depsUnresolved.filter(isAction);
+        //     omitted = omitted.add(otherActions);
+        //     // console.log(depsUnresolved);
+        //     depsUnresolved = depsUnresolved.subtract(otherActions);
 
 
 
-            if (depsUnresolved.isEmpty()) {
-                if (emitted.has(current.emits)) {
-                    console.log(current.emits + ' Emits too much');
-                }
-                queue = queue.push(current);
-                emitted = emitted.add(current.emits);
-                waiting = waiting.unshiftAll(
-                    listeners.get(current.emits)
-                );
-            } else {
-                console.log('hey');
-                waiting = waiting.unshiftAll(
-                    emitters.get(depsUnresolved.first())
-                );
+        //     if (depsUnresolved.isEmpty()) {
+        //         if (emitted.has(current.emits)) {
+        //             console.log(current.emits + ' Emits too much');
+        //         }
+        //         queue = queue.push(current);
+        //         emitted = emitted.add(current.emits);
+        //         waiting = waiting.unshiftAll(
+        //             listeners.get(current.emits)
+        //         );
+        //     } else {
+        //         console.log('hey');
+        //         waiting = waiting.unshiftAll(
+        //             emitters.get(depsUnresolved.first())
+        //         );
 
-            }
-        }
+        //     }
+        // }
+        traverse(''
         return queue;
     };
 
@@ -135,7 +134,7 @@
     module.exports = {
         create: create,
         // dispatch: dispatch,
-        findCycle: findCycle
+        // findCycle: findCycle
         // listen: listen
     };
 
