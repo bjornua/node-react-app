@@ -104,10 +104,8 @@
         }
         var nodes = state.actions.get(actionID);
         var actionEmit = Immutable.Map().set(actionID, payload);
-        // emitted = emitted.set(actionID, payload);
         var emitted = Immutable.Map();
         nodes.forEach(function (node) {
-            console.log(node.emits);
             var stores = state.stores.merge(emitted).merge(actionEmit);
             var args = node.listens.unshift(node.emits).map(function (storeID) {
                 return stores.get(storeID);
