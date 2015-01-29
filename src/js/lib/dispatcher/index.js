@@ -2,18 +2,17 @@
 (function (module) {
     'use strict';
     var Immutable = require('immutable');
-    var utils = require('./utils');
+    var utils = require('../utils');
 
     var initState = new (Immutable.Record({
         stores: Immutable.Map(),
         listeners: Immutable.Map(),
         emitters: Immutable.Map(),
-        actions: Immutable.Map(),
-        targetState: Immutable.Map()
+        actions: Immutable.Map()
     }))();
 
     var DispatchNode = Immutable.Record({
-        listens: Immutable.List(),
+        listens: Immutable.Set(),
         emits: undefined,
         callback: undefined
     });
@@ -34,7 +33,6 @@
         }
         return visited;
     };
-
     var generateQueue = function (action, listeners) {
         var nodes = getTotalListeningNodes(action, listeners);
         var emitters = Immutable.Set();
@@ -92,37 +90,37 @@
             actions = actions.set(actionName, generateQueue(actionName, listeners, emitters));
         });
 
-        return state.merge({
+        var wrap = function (state) {
+            return {
+                state: state, // for testing and debugging
+                dispatch: function (actionID, payload) {
+                    if (!state.actions.has(actionID)) {
+                        throw new Error(utils.format('Action {} is unhandled', actionID));
+                    }
+                    var nodes = state.actions.get(actionID);
+                    var actionEmit = Immutable.Map().set(actionID, payload);
+                    var emitted = Immutable.Map();
+                    nodes.forEach(function (node) {
+                        var stores = state.stores.merge(emitted).merge(actionEmit);
+                        var availStores = node.listens.add(node.emits).toMap().map(function (storeID) {
+                            return stores.get(storeID);
+                        });
+                        var res = node.get('callback')(availStores);
+
+                        emitted = emitted.set(node.emits, res);
+                    });
+                    state = state.mergeIn(['stores'], emitted);
+                    return wrap(state);
+                }
+            };
+        };
+        return wrap(state.merge({
             listeners: listeners,
             emitters: emitters,
             actions: actions
-        });
+        }));
     };
-    var dispatch = function (state, actionID, payload) {
-        if (!state.actions.has(actionID)) {
-            throw new Error(utils.format('Action {} is unhandled', actionID));
-        }
-        var nodes = state.actions.get(actionID);
-        var actionEmit = Immutable.Map().set(actionID, payload);
-        var emitted = Immutable.Map();
-        nodes.forEach(function (node) {
-            var stores = state.stores.merge(emitted).merge(actionEmit);
-            var args = node.listens.unshift(node.emits).map(function (storeID) {
-                return stores.get(storeID);
-            });
-            var res = node.callback.apply(undefined, args.toJS());
-
-            emitted = emitted.set(node.emits, res);
-        });
-        state = state.mergeIn(['stores'], emitted);
-        return state;
-    };
-
     module.exports = {
-        create: create,
-        dispatch: dispatch
-        // findCycle: findCycle
-        // listen: listen
+        create: create
     };
-
 }(module));
