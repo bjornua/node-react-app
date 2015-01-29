@@ -6,7 +6,7 @@
     var noop = function () { return; };
 
     exports.listenerEmpty = function (test) {
-        var state = Dispatcher.create([]).state;
+        var state = Dispatcher.create([]);
         test.equal(state.listeners.size, 0);
         test.equal(state.emitters.size, 0);
         test.equal(state.actions.size, 0);
@@ -24,7 +24,7 @@
     };
 
     exports.oneListener = function (test) {
-        var state = Dispatcher.create([['A', ['action'], noop]]).state;
+        var state = Dispatcher.create([['A', ['action'], noop]]);
         var listeners = state.listeners;
         var emitters = state.emitters;
         var actions = state.actions;
@@ -81,11 +81,11 @@
         var dispatcher = Dispatcher.create([
             ['A', ['action'], function () { return 'lololoo'; }]
         ]);
-        var action = dispatcher.state.actions.get('action');
+        var action = dispatcher.actions.get('action');
         test.strictEqual(action.get(0).emits, 'A');
 
         dispatcher = dispatcher.dispatch('action', {});
-        var stores = dispatcher.state.stores;
+        var stores = dispatcher.stores;
 
         test.strictEqual(stores.size, 1);
         test.strictEqual(stores.get('A'), 'lololoo');
@@ -98,12 +98,12 @@
             ['A', ['greet'], function (stores) { return 'Hello ' + stores.get('greet'); }],
             ['B', ['A'], function (stores) { return stores.get('A') + '!'; }],
         ]);
-        var action = dispatcher.state.actions.get('greet');
+        var action = dispatcher.actions.get('greet');
         test.strictEqual(action.get(0).emits, 'A');
         test.strictEqual(action.get(1).emits, 'B');
 
         dispatcher = dispatcher.dispatch('greet', 'World');
-        var stores = dispatcher.state.stores;
+        var stores = dispatcher.stores;
         test.strictEqual(stores.size, 3);
         test.strictEqual(stores.get('A'), 'Hello World');
         test.strictEqual(stores.get('B'), 'Hello World!');

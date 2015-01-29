@@ -4,13 +4,6 @@
     var Immutable = require('immutable');
     var utils = require('../utils');
 
-    var initState = new (Immutable.Record({
-        stores: Immutable.Map(),
-        listeners: Immutable.Map(),
-        emitters: Immutable.Map(),
-        actions: Immutable.Map()
-    }))();
-
     var DispatchNode = Immutable.Record({
         listens: Immutable.Set(),
         emits: undefined,
@@ -59,66 +52,70 @@
         return queue;
     };
 
-    var create = function (nodesData) {
-        var state = initState;
-        var actions = state.actions;
-        var listeners = state.listeners;
-        var emitters = state.emitters;
-        Immutable.fromJS(nodesData).forEach(function (nodeData) {
-            var node = new DispatchNode();
-            node = node.set('emits', nodeData.get(0));
 
-            if (!Immutable.List.isList(nodeData.get(1)) || nodeData.get(1).isEmpty()) {
-                throw new Error('Listens must be a non-empty array.');
-            }
-            node = node.mergeIn(['listens'], nodeData.get(1));
-            node = node.set('callback', nodeData.get(2));
-            if (node.emits === undefined) {
-                throw new Error('Missing emit target.');
-            }
-            node.listens.forEach(function (emitter) {
-                listeners = listeners.update(emitter, Immutable.List(), function (l) {
+    var initState = new (Immutable.Record({
+        stores: Immutable.Map(),
+        listeners: Immutable.Map(),
+        emitters: Immutable.Map(),
+        actions: Immutable.Map(),
+        init: function (nodesData) {
+            var actions = this.actions;
+            var listeners = this.listeners;
+            var emitters = this.emitters;
+            Immutable.fromJS(nodesData).forEach(function (nodeData) {
+                var node = new DispatchNode();
+                node = node.set('emits', nodeData.get(0));
+
+                if (!Immutable.List.isList(nodeData.get(1)) || nodeData.get(1).isEmpty()) {
+                    throw new Error('Listens must be a non-empty array.');
+                }
+                node = node.mergeIn(['listens'], nodeData.get(1));
+                node = node.set('callback', nodeData.get(2));
+                if (node.emits === undefined) {
+                    throw new Error('Missing emit target.');
+                }
+                node.listens.forEach(function (emitter) {
+                    listeners = listeners.update(emitter, Immutable.List(), function (l) {
+                        return l.unshift(node);
+                    });
+                });
+                emitters = emitters.update(node.emits, Immutable.List(), function (l) {
                     return l.unshift(node);
                 });
             });
-            emitters = emitters.update(node.emits, Immutable.List(), function (l) {
-                return l.unshift(node);
+            var actionKeys = Immutable.Set(listeners.keys()).subtract(emitters.keys());
+            actionKeys.forEach(function (actionName) {
+                actions = actions.set(actionName, generateQueue(actionName, listeners, emitters));
             });
-        });
-        var actionKeys = Immutable.Set(listeners.keys()).subtract(emitters.keys());
-        actionKeys.forEach(function (actionName) {
-            actions = actions.set(actionName, generateQueue(actionName, listeners, emitters));
-        });
 
-        var wrap = function (state) {
-            return {
-                state: state, // for testing and debugging
-                dispatch: function (actionID, payload) {
-                    if (!state.actions.has(actionID)) {
-                        throw new Error(utils.format('Action {} is unhandled', actionID));
-                    }
-                    var nodes = state.actions.get(actionID);
-                    var actionEmit = Immutable.Map().set(actionID, payload);
-                    var emitted = Immutable.Map();
-                    nodes.forEach(function (node) {
-                        var stores = state.stores.merge(emitted).merge(actionEmit);
-                        var availStores = node.listens.add(node.emits).toMap().map(function (storeID) {
-                            return stores.get(storeID);
-                        });
-                        var res = node.get('callback')(availStores);
+            return this.merge({
+                listeners: listeners,
+                emitters: emitters,
+                actions: actions
+            });
+        },
+        dispatch: function (actionID, payload) {
+            if (!this.actions.has(actionID)) {
+                throw new Error(utils.format('Action {} is unhandled', actionID));
+            }
+            var nodes = this.actions.get(actionID);
+            var actionEmit = Immutable.Map().set(actionID, payload);
+            var emitted = Immutable.Map();
+            nodes.forEach(function (node) {
+                var stores = this.stores.merge(emitted).merge(actionEmit);
+                var availStores = node.listens.add(node.emits).toMap().map(function (storeID) {
+                    return stores.get(storeID);
+                });
+                var res = node.get('callback')(availStores);
 
-                        emitted = emitted.set(node.emits, res);
-                    });
-                    state = state.mergeIn(['stores'], emitted);
-                    return wrap(state);
-                }
-            };
-        };
-        return wrap(state.merge({
-            listeners: listeners,
-            emitters: emitters,
-            actions: actions
-        }));
+                emitted = emitted.set(node.emits, res);
+            }, this);
+            return this.mergeIn(['stores'], emitted);
+        }
+    }))();
+    var create = function (nodesData) {
+        var state = initState;
+        return state.init(nodesData);
     };
     module.exports = {
         create: create
