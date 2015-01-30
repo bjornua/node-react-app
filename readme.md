@@ -1,0 +1,1 @@
+[![Build Status](https://travis-ci.org/bjornua/node-react-app.svg?branch=master)](https://travis-ci.org/bjornua/node-react-app)
