@@ -1,42 +1,33 @@
 /*global module, require */
 
 
-
-
-module.exports = function () {
+module.exports = (function () {
     'use strict';
+    var actions = '';
 
-    var Reflux = require('reflux');
     var urls = require('../urls');
+    var createEmitter = require('../lib/dispatcher').createEmitter;
 
-    var actions = Reflux.createActions(['setView', 'setURL']);
-    var store = Reflux.createStore({
-        onSetView: function (payload) {
-            var match = urls.build(payload.key, payload.params);
-            this.triggerMatch(match);
-        },
-        onSetURL: function (payload) {
-            var match = this.getContext().urls.match(payload.url);
-            this.triggerMatch(match);
-        },
-        triggerMatch: function (match) {
-            this.trigger({
-                handler: match.value,
-                key: match.key,
-                params: match.params,
-                url: match.url
-            });
-            this.trigger(match);
-        }
-    });
-
-    return {
-        name: 'navigation',
-        actions: actions,
-        store: store
+    var triggerMatch = function (match) {
+        return {
+            handler: match.value,
+            key: match.key,
+            params: match.params,
+            url: match.url
+        };
     };
-};
 
+    return createEmitter('navigation')
+        .on([actions.setURL], function (stores) {
+            var match = urls.match(stores.getIn([actions.setURL, 'url']));
+            return triggerMatch(match);
+        }).on([actions.setView], function (stores) {
+            var key = stores.get([actions.setURL, 'key']);
+            var params = stores.get([actions.setURL, 'params']);
+            var match = urls.build(key, params);
+            return triggerMatch(match);
+        });
+}());
 /*
 var createStore = require('dispatchr/utils/createStore');
 var UserStore = require('./user');

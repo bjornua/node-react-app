@@ -1,7 +1,7 @@
 /*global module, require */
 
 
-var Dispatchr = require('dispatchr')();
+var Dispatcher = require('./lib/dispatcher');
 var _ = require('lodash');
 
 
@@ -9,11 +9,7 @@ var stores = [
     require('./store/navigation.js')
 ];
 
-var createApp = function () {
-
-};
-
-
+module.exports = Dispatcher.create(stores);
 
 // Dispatchr.registerStore(require('./store/navigation.js'));
 // Dispatchr.registerStore(require('./store/title.js'));
