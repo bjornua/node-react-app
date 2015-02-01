@@ -1,40 +1,32 @@
 /*global module, require */
 
 
-
-
 module.exports = function () {
     'use strict';
 
-    var Reflux = require('reflux');
     var urls = require('../urls');
+    var coldstorage = require('coldstorage');
+    var action = require('../action');
 
-    var actions = Reflux.createActions(['setView', 'setURL']);
-    var store = Reflux.createStore({
-        onSetView: function (payload) {
-            var match = urls.build(payload.key, payload.params);
-            this.triggerMatch(match);
-        },
-        onSetURL: function (payload) {
-            var match = this.getContext().urls.match(payload.url);
-            this.triggerMatch(match);
-        },
-        triggerMatch: function (match) {
-            this.trigger({
-                handler: match.value,
-                key: match.key,
-                params: match.params,
-                url: match.url
-            });
-            this.trigger(match);
+    var store = coldstorage.createStore('navigation');
+
+    store = store.on([action.setURL, action.setView], function (setURL, setView) {
+        var match;
+        if (setURL !== undefined) {
+            match = urls.match(setURL.get('url'));
         }
+        if (setView !== undefined) {
+            match = urls.build(setView.get('key'), setView.get('params'));
+        }
+        return this.merge({
+            handler: match.value,
+            key: match.key,
+            params: match.params,
+            url: match.url
+        });
     });
 
-    return {
-        name: 'navigation',
-        actions: actions,
-        store: store
-    };
+    return store;
 };
 
 /*

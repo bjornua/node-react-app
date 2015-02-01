@@ -12,7 +12,8 @@ module.exports = React.createClass({
     render: function () {
         var menu = [];
         var self = this;
-        if (!this.store(UserStore).isAuthed) {
+        //if (!this.store(UserStore).isAuthed) {
+        if (false) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {

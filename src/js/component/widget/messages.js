@@ -39,7 +39,7 @@ module.exports = React.createClass({
         this.removeStoreListener(MsgStore, this.nextMessage);
     },
     render: function () {
-        var current = this.store(MsgStore).current;
+        var current = {};// = this.store(MsgStore).current;
         var self = this;
         var msg = function (classname) {
             var classes = React.addons.classSet({

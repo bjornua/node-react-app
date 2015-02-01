@@ -2,7 +2,10 @@
 var React = require('react');
 var env = require('./env');
 
-env.create(window.document.location.pathname).then(function (component) {
+var component = env.create(window.document.location.pathname);
+React.render(component, window.document);
+
+/*env.create(window.document.location.pathname).then(function (component) {
     'use strict';
     React.render(component, window.document);
-});
+});*/

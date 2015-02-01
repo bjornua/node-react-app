@@ -1,18 +1,11 @@
 /*global module, require */
 
 
-var Dispatchr = require('dispatchr')();
-var _ = require('lodash');
+var coldstorage = require('coldstorage');
 
-
-var stores = [
-    require('./store/navigation.js')
-];
-
-var createApp = function () {
-
-};
-
+module.exports = coldstorage.fromStores([
+    require('./store/navigation.js')()
+]);
 
 
 // Dispatchr.registerStore(require('./store/navigation.js'));

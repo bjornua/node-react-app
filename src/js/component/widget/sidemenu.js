@@ -16,7 +16,7 @@ module.exports = React.createClass({
         menu.push(['wqe', {callback: function () {
             self.dispatch('sidemenu_hide');
         }}, 'Close']);
-        if (!this.store(UserStore).isAuthed) {
+        if (/*!this.store(UserStore).isAuthed*/false) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {
