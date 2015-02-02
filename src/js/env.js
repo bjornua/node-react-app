@@ -21,14 +21,11 @@ function create(initialURL) {
 function mixin(stores) {
     'use strict';
     return {
-        // store: function (store) {
-        //     return this.props.dispatcher.getStore(store);
-        // },
         redirect: function () {
             return React.createElement();
         },
         dispatch: function (eventname, payload) {
-            return this.props.dispatcher.dispatch(eventname, payload);
+            return this.props.onDispatch(eventname, payload);
         },
         listen: function (store, callback) {
             var f = function () {
@@ -38,28 +35,12 @@ function mixin(stores) {
             this.listeners.push([store, f]);
             this.store(store).addChangeListener(f);
         },
-        // componentDidMount: function () {
-        //     this.listeners = [];
-        //     var update = function () {
-        //         if (this.isMounted()) {
-        //             this.forceUpdate();
-        //         }
-        //     };
-        //     _.forEach(stores, function (store) {
-        //         this.listen(store, update);
-        //     }, this);
-        // },
-        // componentWillUnmount: function () {
-        //     _.forEach(this.listeners, function (listener) {
-        //         var store = listener[0];
-        //         var callback = listener[1];
-        //         this.store(store).removeChangeListener(callback);
-        //     }, this);
-
-        // },
         createElement: function () {
             var args = _.toArray(arguments);
-            args[1] = _.assign({dispatcher: this.props.dispatcher}, args[1]);
+            args[1] = _.assign({
+                onDispatch: this.props.onDispatch,
+                stores: this.props.stores
+            }, args[1]);
             return React.createElement.apply(null, args);
         },
         getChildHandler: function () {
