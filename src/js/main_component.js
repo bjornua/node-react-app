@@ -1,10 +1,9 @@
 /*global require, module, window */
-var hrhrmhandler = require('./component/notfound.js');
-
 module.exports = (function (require) {
     'use strict';
     var React = require('react');
     var env = require('./env');
+    var Immutable = require('immutable');
 
     var  main_component = React.createClass({
         displayName: 'main_component',
@@ -22,41 +21,32 @@ module.exports = (function (require) {
         //         window.history.pushState(null, null, nav.url);
         //     }
         // },
-        // update_view: function () {
-        //     var nav = this.store(NavigationStore);
-        //     var urls = this.props.urls;
-        //     var match;
-        //     if (nav.url !== null) {
-        //         match = urls.match(nav.url);
-        //     } else {
-        //         match = urls.build(nav.view.key, nav.view.params);
-        //     }
 
-        //     var redirect;
-        //     while (match.redirect !== undefined) {
-        //         redirect = match.value.redirect(match);
-        //         if (redirect !== undefined) {
-        //             match = urls.build(redirect.key, redirect.params);
-        //         } else {
-        //             break;
-        //         }
-        //     }
-        //     this.setState({
-        //         title: match.value.initialTitle(),
-        //         match: match
-        //     });
-        //     return;
-        // },
+        // Props in get initial state. Trust me!
+        getInitialState: function () {
+            return {
+                dispatcher: this.props.dispatcher
+            };
+        },
+        onDispatch: function (action, payload) {
+            this.setState({
+                dispatcher: this.state.dispatcher.dispatch(action, payload)
+            });
+        },
         render: function () {
-
-            var main_handler = hrhrmhandler;
-
-            var handler = main_handler;
-            while (handler.parent !== undefined) {
-                handler = handler.parent;
-            }
-
             var title = 'Hello hrose' + ' - dotarally.com';
+            var stores = this.state.dispatcher.stores;
+
+            var current = stores.get('navigation').get('handler');
+            var handlers = Immutable.Stack();
+            while (current !== undefined) {
+                handlers = handlers.unshift(current);
+                current = current.parent;
+            }
+            console.log(handlers.toList().map(function (val) { return val; }));
+
+            var handler = handlers.first();
+            handlers = handlers.shift();
 
             return React.createElement('html', {},
                 React.createElement('head', {},
@@ -65,7 +55,7 @@ module.exports = (function (require) {
                     React.createElement('meta', {name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"})
                 ),
                 React.createElement('body', {},
-                    this.createElement(handler, {handler: main_handler}),
+                    this.createElement(handler, {handlers: handlers, stores: this.state.dispatcher.stores, onDispatch: this.onDispatch}),
                     React.createElement('script', {async: true, src: '/script.js'}),
                     React.createElement('script', {async: true, src: 'http://localhost:35729/livereload.js'})
                 )

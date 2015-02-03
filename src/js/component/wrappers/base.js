@@ -12,8 +12,6 @@ var SidemenuStore = require('../../store/sidemenu');
 var base = React.createClass({
     mixins: [env.mixin([SidemenuStore])],
     displayName: 'base',
-    componentDidMount: function () {
-    },
     render: function () {
         var baseClasses = React.addons.classSet({
             'dh-base': true,

@@ -15,24 +15,24 @@ module.exports = React.createClass({
             hide: true
         });
     },
-    componentDidMount: function () {
-        var self = this;
-        self.nextMessage = function () {
-            if (self.store(MsgStore).current !== null && self.state.hide === true) {
-                self.setState({hide: false});
-                self.timer_hide = window.setTimeout(function () {
-                    self.setState({hide: true});
-                    self.timer_hidden = window.setTimeout(function () {
-                        self.dispatch('messages_next');
-                    }, 400);
-                }, 4000);
-            } else {
-                self.setState({hide: true});
-            }
-        };
-        self.nextMessage();
-        self.addStoreListener(MsgStore, self.nextMessage);
-    },
+    // componentDidMount: function () {
+    //     var self = this;
+    //     self.nextMessage = function () {
+    //         if (self.store(MsgStore).current !== null && self.state.hide === true) {
+    //             self.setState({hide: false});
+    //             self.timer_hide = window.setTimeout(function () {
+    //                 self.setState({hide: true});
+    //                 self.timer_hidden = window.setTimeout(function () {
+    //                     self.dispatch('messages_next');
+    //                 }, 400);
+    //             }, 4000);
+    //         } else {
+    //             self.setState({hide: true});
+    //         }
+    //     };
+    //     self.nextMessage();
+    //     self.addStoreListener(MsgStore, self.nextMessage);
+    // },
     componentWillUnmount: function () {
         window.clearTimeout(this.timer_hide);
         window.clearTimeout(this.timer_hidden);

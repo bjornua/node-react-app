@@ -21,19 +21,8 @@ function create(initialURL) {
 function mixin(stores) {
     'use strict';
     return {
-        redirect: function () {
-            return React.createElement();
-        },
         dispatch: function (eventname, payload) {
             return this.props.onDispatch(eventname, payload);
-        },
-        listen: function (store, callback) {
-            var f = function () {
-                console.log('called');
-                callback.apply(this, []);
-            }.bind(this);
-            this.listeners.push([store, f]);
-            this.store(store).addChangeListener(f);
         },
         createElement: function () {
             var args = _.toArray(arguments);
@@ -44,17 +33,12 @@ function mixin(stores) {
             return React.createElement.apply(null, args);
         },
         getChildHandler: function () {
-            var handler = this.props.handler;
+            var next = this.props.handlers.first();
+            console.log(next.displayName);
+            var handlers = this.props.handlers.shift();
+            this.createElement(next, {handlers: handlers});
 
-            while (handler !== undefined && handler.parent !== undefined) {
-                if (handler.parent.displayName === this.constructor.displayName) {
-                    return this.createElement(handler, {handler: this.props.handler});
-                }
-                handler = handler.parent;
-            }
-            return;
         }
-
     };
 }
 

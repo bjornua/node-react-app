@@ -1,9 +1,6 @@
-/*global module, require */
-
+'use strict';
 
 module.exports = function () {
-    'use strict';
-
     var urls = require('../urls');
     var coldstorage = require('coldstorage');
     var action = require('../action');
@@ -18,12 +15,24 @@ module.exports = function () {
         if (setView !== undefined) {
             match = urls.build(setView.get('key'), setView.get('params'));
         }
-        return this.merge({
+
+        var redirect;
+        while (match.redirect !== undefined) {
+            redirect = match.value.redirect();
+            if (redirect !== undefined) {
+                match = urls.build(redirect.key, redirect.params);
+            } else {
+                break;
+            }
+        }
+
+        var nextState = this.merge({
             handler: match.value,
             key: match.key,
             params: match.params,
             url: match.url
         });
+        return nextState;
     });
 
     return store;
