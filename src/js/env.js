@@ -1,4 +1,4 @@
-/*global module, require */
+/*global module, require, console */
 
 var React = require('react');
 var action = require('./action');
@@ -18,7 +18,7 @@ function create(initialURL) {
     return React.createElement(main_component, {urls: urls, dispatcher: dispatcher});
 }
 
-function mixin(stores) {
+function mixin() {
     'use strict';
     return {
         dispatch: function (eventname, payload) {
@@ -34,9 +34,8 @@ function mixin(stores) {
         },
         getChildHandler: function () {
             var next = this.props.handlers.first();
-            console.log(next.displayName);
             var handlers = this.props.handlers.shift();
-            this.createElement(next, {handlers: handlers});
+            return this.createElement(next, {handlers: handlers});
 
         }
     };

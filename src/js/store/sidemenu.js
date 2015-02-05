@@ -1,32 +1,19 @@
 /*global module, require, console */
-// var createStore = require('dispatchr/utils/createStore');
+'use strict';
 
-// module.exports = createStore({
-//     storeName: 'sidemenu',
-//     getStore: function (store) {
-//         'use strict';
-//         return this.dispatcher.getStore(store);
-//     },
-//     initialize: function () {
-//         'use strict';
-//         this.show = false;
-//     },
-//     showmenu: function () {
-//         'use strict';
-//         if (this.show !== true) {
-//             this.show = true;
-//             this.emitChange();
-//         }
-//     },
-//     hidemenu: function () {
-//         'use strict';
-//         if (this.show !== false) {
-//             this.show = false;
-//             this.emitChange();
-//         }
-//     },
-//     handlers: {
-//         sidemenu_show: 'showmenu',
-//         sidemenu_hide: 'hidemenu',
-//     }
-// });
+var coldstorage = require('coldstorage');
+var action = require('../action');
+
+var store = coldstorage.createStore('sidemenu');
+
+store = store.on([action.init], function () {
+    return this.set('show', true);
+});
+store = store.on([action.sidemenuShow], function () {
+    return this.set('show', true);
+});
+store = store.on([action.sidemenuHide], function () {
+    return this.set('show', false);
+});
+
+module.exports = store;

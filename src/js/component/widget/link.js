@@ -3,6 +3,7 @@
 var React = require('react');
 var urls = require('../../urls');
 var env = require('../../env');
+var action = require('../../action');
 
 module.exports = React.createClass({
     mixins: [env.mixin()],
@@ -21,7 +22,7 @@ module.exports = React.createClass({
             url = urls.build(self.props.dest, self.props.params).url;
             link = function (e) {
                 e.preventDefault();
-                self.dispatch('navigate', {key: self.props.dest, params: self.props.params});
+                self.dispatch(action.setView, {key: self.props.dest, params: self.props.params});
             };
         }
         return (

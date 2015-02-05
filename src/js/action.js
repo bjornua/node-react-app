@@ -4,5 +4,9 @@ var coldstorage = require('coldstorage');
 
 module.exports = coldstorage.createActions([
     'setView',
-    'setURL'
+    'setURL',
+    'sidemenuHide',
+    'sidemenuShow',
+    'signin',
+    'signout'
 ]);

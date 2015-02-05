@@ -15,7 +15,7 @@ var base = React.createClass({
     render: function () {
         var baseClasses = React.addons.classSet({
             'dh-base': true,
-            'dh-sidemenu-open': true //this.store(SidemenuStore).show
+            'dh-sidemenu-open': this.props.stores.getIn(['sidemenu', 'show'])
         });
         return React.createElement('div', {className: baseClasses},
             React.createElement('div', {className: "dh-header"},

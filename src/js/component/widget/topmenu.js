@@ -6,21 +6,22 @@ var link = require('./link');
 var env = require('../../env');
 var UserStore = require('../../store/user');
 var _ = require('lodash');
+var action = require('../../action');
 
 module.exports = React.createClass({
     mixins: [env.mixin([UserStore])],
     render: function () {
         var menu = [];
         var self = this;
-        //if (!this.store(UserStore).isAuthed) {
-        if (false) {
+        console.log(this.props.stores.toJS());
+        if (!this.props.stores.get(UserStore).get('isAuthed')) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {
             menu.push([2, {dest: 'user_home'}, 'Dashboard']);
             menu.push([3, {dest: 'timer'}, 'Timer Test App']);
             menu.push([4, {callback: function () {
-                self.dispatch('signout');
+                self.dispatch(action.userSignout);
             }}, 'Sign out']);
         }
 
@@ -36,7 +37,7 @@ module.exports = React.createClass({
         return React.createElement('ul', {},
             menu,
             React.createElement('li', {className: 'dh-menu-icon'},
-                this.createElement(link, {callback: function () { self.dispatch('sidemenu_show'); }},
+                this.createElement(link, {callback: function () { self.dispatch(action.sideMenuShow); }},
                     React.createElement('img', {src: '/image/menu.png'})
                 )
             )

@@ -30,7 +30,7 @@ module.exports = React.createClass({
     },
     getInitialState: function () {
         return {
-            email: this.store(UserStore).username,
+            email: '',//this.store(UserStore).username,
             password: ''
         };
     },

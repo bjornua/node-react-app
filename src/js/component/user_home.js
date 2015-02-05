@@ -27,7 +27,7 @@ module.exports = React.createClass({
     },
     render: function () {
         return this.createElement('div', {},
-            React.createElement('h1', {}, this.store(UserStore).username),
+            React.createElement('h1', {}, ''),/*this.store(UserStore).username),*/
             React.createElement('p', {}, 'Hello and welcome. This is your profile page.')
         );
     }

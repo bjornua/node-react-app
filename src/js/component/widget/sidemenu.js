@@ -5,7 +5,7 @@ var React = require('react');
 var link = require('./link');
 var env = require('../../env');
 var UserStore = require('../../store/user');
-// var RouterStore = require('../../store/router');
+var action = require('../../action');
 var _ = require('lodash');
 
 module.exports = React.createClass({
@@ -14,7 +14,7 @@ module.exports = React.createClass({
         var menu = [];
         var self = this;
         menu.push(['wqe', {callback: function () {
-            self.dispatch('sidemenu_hide');
+            self.dispatch(action.sidemenuHide);
         }}, 'Close']);
         if (/*!this.store(UserStore).isAuthed*/false) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);

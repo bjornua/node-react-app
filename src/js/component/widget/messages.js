@@ -6,6 +6,7 @@ var link = require('../widget/link');
 var env = require('../../env');
 var MsgStore = require('../../store/messages');
 var _ = require('lodash');
+var action = require('../../action');
 
 module.exports = React.createClass({
     mixins: [env.mixin()],

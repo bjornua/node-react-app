@@ -4,7 +4,9 @@
 var coldstorage = require('coldstorage');
 
 module.exports = coldstorage.fromStores([
-    require('./store/navigation.js')()
+    require('./store/navigation.js')(),
+    require('./store/sidemenu.js'),
+    require('./store/user.js')
 ]);
 
 
