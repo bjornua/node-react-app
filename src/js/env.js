@@ -13,6 +13,7 @@ function create(initialURL) {
     var main_component = require('./main_component');
     var urls = require('./urls');
 
+    dispatcher = dispatcher.dispatch(action.init);
     dispatcher = dispatcher.dispatch(action.setURL, {url: initialURL});
 
     return React.createElement(main_component, {urls: urls, dispatcher: dispatcher});

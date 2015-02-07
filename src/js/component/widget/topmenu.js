@@ -13,15 +13,14 @@ module.exports = React.createClass({
     render: function () {
         var menu = [];
         var self = this;
-        console.log(this.props.stores.toJS());
-        if (!this.props.stores.get(UserStore).get('isAuthed')) {
+        if (!this.props.stores.get('user').get('isAuthed')) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {
             menu.push([2, {dest: 'user_home'}, 'Dashboard']);
             menu.push([3, {dest: 'timer'}, 'Timer Test App']);
             menu.push([4, {callback: function () {
-                self.dispatch(action.userSignout);
+                self.dispatch(action.signout);
             }}, 'Sign out']);
         }
 
@@ -37,7 +36,7 @@ module.exports = React.createClass({
         return React.createElement('ul', {},
             menu,
             React.createElement('li', {className: 'dh-menu-icon'},
-                this.createElement(link, {callback: function () { self.dispatch(action.sideMenuShow); }},
+                this.createElement(link, {callback: function () { self.dispatch(action.sidemenuShow); }},
                     React.createElement('img', {src: '/image/menu.png'})
                 )
             )

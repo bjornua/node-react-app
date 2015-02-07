@@ -7,6 +7,7 @@ var link = require('./widget/link');
 var env = require('../env');
 var UserStore = require('../store/user');
 var Q = require('q');
+var action = require('../action');
 
 module.exports = React.createClass({
     mixins: [env.mixin([UserStore])],
@@ -24,7 +25,7 @@ module.exports = React.createClass({
     },
     signin: function (e) {
         e.preventDefault();
-        this.dispatch('signin', {username: this.state.email});
+        this.dispatch(action.signin, {username: this.state.email});
     },
     emailChange: function (e) {
         this.setState({email: e.target.value});

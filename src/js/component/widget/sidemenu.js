@@ -5,8 +5,8 @@ var React = require('react');
 var link = require('./link');
 var env = require('../../env');
 var UserStore = require('../../store/user');
-var action = require('../../action');
 var _ = require('lodash');
+var action = require('../../action');
 
 module.exports = React.createClass({
     mixins: [env.mixin([UserStore])],
@@ -16,14 +16,14 @@ module.exports = React.createClass({
         menu.push(['wqe', {callback: function () {
             self.dispatch(action.sidemenuHide);
         }}, 'Close']);
-        if (/*!this.store(UserStore).isAuthed*/false) {
+        if (this.props.stores.get('user').get('isAuthed')) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {
             menu.push([2, {dest: 'user_home'}, 'Dashboard']);
             menu.push([3, {dest: 'timer'}, 'Timer Test App']);
             menu.push([4, {callback: function () {
-                self.dispatch('signout');
+                self.dispatch(action.signout);
             }}, 'Sign out']);
         }
 

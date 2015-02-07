@@ -4,6 +4,7 @@ module.exports = function () {
     var urls = require('../urls');
     var coldstorage = require('coldstorage');
     var action = require('../action');
+    var Immutable = require('immutable');
 
     var store = coldstorage.createStore('navigation');
 
@@ -13,7 +14,8 @@ module.exports = function () {
             match = urls.match(setURL.get('url'));
         }
         if (setView !== undefined) {
-            match = urls.build(setView.get('key'), setView.get('params'));
+            console.log(String(setView));
+            match = urls.build(setView.get('key'), setView.get('params', Immutable.Map()).toJS());
         }
 
         var redirect;

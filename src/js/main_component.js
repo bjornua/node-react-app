@@ -43,7 +43,6 @@ module.exports = (function (require) {
                 handlers = handlers.unshift(current);
                 current = current.parent;
             }
-            console.log(handlers.toList().map(function (val) { return val; }));
 
             var handler = handlers.first();
             handlers = handlers.shift();
