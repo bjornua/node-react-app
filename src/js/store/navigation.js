@@ -14,8 +14,11 @@ module.exports = function () {
             match = urls.match(setURL.get('url'));
         }
         if (setView !== undefined) {
-            console.log(String(setView));
-            match = urls.build(setView.get('key'), setView.get('params', Immutable.Map()).toJS());
+            var params = setView.get('params');
+            if (params === undefined) {
+                params = Immutable.Map();
+            }
+            match = urls.build(setView.get('key'), params.toJS());
         }
 
         var redirect;
