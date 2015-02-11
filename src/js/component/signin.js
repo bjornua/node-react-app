@@ -16,9 +16,8 @@ module.exports = React.createClass({
             return 'Create User';
         },
         parent: page,
-        redirect: function (dispatcher) {
-            var store = dispatcher.getStore(UserStore);
-            if (store.isAuthed === true) {
+        redirect: function (userStore) {
+            if (userStore.get('isAuthed') === true) {
                 return {key: 'user_home'};
             }
         }

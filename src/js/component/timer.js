@@ -21,8 +21,7 @@ module.exports = React.createClass({
     },
     tick: function () {
         var newTime = this.state.secondsElapsed + 1;
-        // this.dispatch(action.setTitle, 'Timer: ' + String(newTime));
-        this.dispatch('setTitle', 'lol');
+        this.dispatch(action.setTitle, {title: 'Timer: ' + String(newTime)});
         this.setState({secondsElapsed: newTime});
     },
     componentDidMount: function () {

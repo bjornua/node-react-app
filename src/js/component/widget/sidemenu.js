@@ -4,19 +4,18 @@
 var React = require('react');
 var link = require('./link');
 var env = require('../../env');
-var UserStore = require('../../store/user');
 var _ = require('lodash');
 var action = require('../../action');
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore])],
+    mixins: [env.mixin()],
     render: function () {
         var menu = [];
         var self = this;
         menu.push(['wqe', {callback: function () {
             self.dispatch(action.sidemenuHide);
         }}, 'Close']);
-        if (this.props.stores.get('user').get('isAuthed')) {
+        if (!this.get('user', 'isAuthed')) {
             menu.push([0, {dest: 'user_create'}, 'Create user']);
             menu.push([1, {dest: 'user_signin'}, 'Sign in']);
         } else {

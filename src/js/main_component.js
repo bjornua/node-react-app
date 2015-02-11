@@ -17,22 +17,19 @@ var main_component = React.createClass({
     },
     render: function () {
         var window = this.props.window;
-        console.log(this.get('navigation', 'url'));
         if (window !== undefined) {
             if (window.document.location.pathname !== this.get('navigation', 'url')) {
                 window.history.pushState(null, null, this.get('navigation', 'url'));
             }
         }
-        var title = 'Hello hrose' + ' - dotarally.com';
-        var stores = this.state.dispatcher.stores;
+        var title = this.get('navigation', 'title');
 
-        var current = stores.get('navigation').get('handler');
+        var current = this.get('navigation', 'handler');
         var handlers = Immutable.Stack();
         while (current !== undefined) {
             handlers = handlers.unshift(current);
             current = current.parent;
         }
-
         var handler = handlers.first();
         handlers = handlers.shift();
 

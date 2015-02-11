@@ -15,14 +15,10 @@ module.exports = React.createClass({
             return 'Page';
         },
         parent: page,
-        redirect: function (dispatcher) {
-            return Q(function (resolve) {
-                dispatcher.waitFor([UserStore], resolve);
-            }).then(function () {
-                if (dispatcher.getStore(UserStore).isAuthed === false) {
-                    return {key: 'user_signin'};
-                }
-            });
+        redirect: function (user) {
+            if (user.get('isAuthed') === false) {
+                return {key: 'user_signin'};
+            }
         }
     },
     render: function () {
