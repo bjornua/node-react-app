@@ -4,6 +4,7 @@
 var React = require('react');
 var page = require('./wrappers/page');
 var env = require('../env');
+var action = require('../action');
 
 module.exports = React.createClass({
     statics: {
@@ -20,7 +21,8 @@ module.exports = React.createClass({
     },
     tick: function () {
         var newTime = this.state.secondsElapsed + 1;
-        this.dispatch('setTitle', 'Timer: ' + String(newTime));
+        // this.dispatch(action.setTitle, 'Timer: ' + String(newTime));
+        this.dispatch('setTitle', 'lol');
         this.setState({secondsElapsed: newTime});
     },
     componentDidMount: function () {

@@ -1,66 +1,54 @@
 /*global require, module, window */
-module.exports = (function (require) {
-    'use strict';
-    var React = require('react');
-    var env = require('./env');
-    var Immutable = require('immutable');
+'use strict';
+var React = require('react');
+var env = require('./env');
+var Immutable = require('immutable');
+var action = require('./action');
 
-    var  main_component = React.createClass({
-        displayName: 'main_component',
-        mixins: [env.mixin()],
-        // componentWillMount: function () {
-        //     this.update_view();
-        // },
-        // componentDidMount: function () {
-        //     window.onpopstate = function () {
-        //         this.dispatch('navigateURL', {url: window.document.location.pathname});
-        //     }.bind(this);
+var main_component = React.createClass({
+    displayName: 'main_component',
+    mixins: [env.top_mixin()],
 
+    componentDidMount: function () {
+        window.onpopstate = function () {
+            this.dispatch(action.setURL, {url: window.document.location.pathname});
+        }.bind(this);
 
-        //     if (window.document.location.pathname !== nav.url) {
-        //         window.history.pushState(null, null, nav.url);
-        //     }
-        // },
-
-        // Props in get initial state. Trust me!
-        getInitialState: function () {
-            return {
-                dispatcher: this.props.dispatcher
-            };
-        },
-        onDispatch: function (action, payload) {
-            this.setState({
-                dispatcher: this.state.dispatcher.dispatch(action, payload)
-            });
-        },
-        render: function () {
-            var title = 'Hello hrose' + ' - dotarally.com';
-            var stores = this.state.dispatcher.stores;
-
-            var current = stores.get('navigation').get('handler');
-            var handlers = Immutable.Stack();
-            while (current !== undefined) {
-                handlers = handlers.unshift(current);
-                current = current.parent;
+    },
+    render: function () {
+        var window = this.props.window;
+        console.log(this.get('navigation', 'url'));
+        if (window !== undefined) {
+            if (window.document.location.pathname !== this.get('navigation', 'url')) {
+                window.history.pushState(null, null, this.get('navigation', 'url'));
             }
-
-            var handler = handlers.first();
-            handlers = handlers.shift();
-
-            return React.createElement('html', {},
-                React.createElement('head', {},
-                    React.createElement('title', {}, title),
-                    React.createElement('link', {rel: "stylesheet", type: "text/css", href: "/style.css"}),
-                    React.createElement('meta', {name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"})
-                ),
-                React.createElement('body', {},
-                    this.createElement(handler, {handlers: handlers, stores: this.state.dispatcher.stores, onDispatch: this.onDispatch}),
-                    React.createElement('script', {async: true, src: '/script.js'}),
-                    React.createElement('script', {async: true, src: 'http://localhost:35729/livereload.js'})
-                )
-            );
         }
-    });
+        var title = 'Hello hrose' + ' - dotarally.com';
+        var stores = this.state.dispatcher.stores;
 
-    return main_component;
-}(require));
+        var current = stores.get('navigation').get('handler');
+        var handlers = Immutable.Stack();
+        while (current !== undefined) {
+            handlers = handlers.unshift(current);
+            current = current.parent;
+        }
+
+        var handler = handlers.first();
+        handlers = handlers.shift();
+
+        return React.createElement('html', {},
+            React.createElement('head', {},
+                React.createElement('title', {}, title),
+                React.createElement('link', {rel: "stylesheet", type: "text/css", href: "/style.css"}),
+                React.createElement('meta', {name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"})
+            ),
+            React.createElement('body', {},
+                this.createElement(handler, {handlers: handlers}),
+                React.createElement('script', {async: true, src: '/script.js'}),
+                React.createElement('script', {async: true, src: 'http://localhost:35729/livereload.js'})
+            )
+        );
+    }
+});
+
+module.exports = main_component;

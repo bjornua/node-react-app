@@ -9,5 +9,6 @@ module.exports = coldstorage.createActions([
     'sidemenuHide',
     'sidemenuShow',
     'signin',
-    'signout'
+    'signout',
+    'setTitle'
 ]);
