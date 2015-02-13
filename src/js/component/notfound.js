@@ -20,7 +20,7 @@ module.exports = React.createClass({
             React.createElement('div', {className: 'dh-maxw35'},
                 React.createElement('p', {}, 'The page you are looking for does not exist.'),
                 React.createElement('p', {},
-                    React.createElement('strong', {}) //, this.store(RouterStore).url)
+                    React.createElement('strong', {}, this.get('navigation', 'url'))
                 ),
                 React.createElement('p', {}, 'This usually happens when:'),
                 React.createElement('ul', {},
