@@ -1,5 +1,5 @@
 /*global module, require, console */
-'use strict';
+"use strict"
 
 var React = require('react');
 var action = require('./action');
