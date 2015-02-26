@@ -25,7 +25,7 @@ function top_mixin() {
             return this.onDispatch(eventname, payload);
         },
         get: function () {
-            return this.state.dispatcher.stores.getIn(arguments);
+            return this.state.dispatcher.get(_.toArray(arguments));
         },
         getInitialState: function () {
             return {
@@ -41,7 +41,7 @@ function top_mixin() {
             var args = _.toArray(arguments);
             args[1] = _.assign({
                 onDispatch: this.onDispatch,
-                stores: this.state.dispatcher.stores
+                dispatcher: this.state.dispatcher
             }, args[1]);
             return React.createElement.apply(null, args);
         }
@@ -55,13 +55,13 @@ function mixin() {
             return this.props.onDispatch(eventname, payload);
         },
         get: function () {
-            return this.props.stores.getIn(arguments);
+            return this.props.dispatcher.get(_.toArray(arguments));
         },
         createElement: function () {
             var args = _.toArray(arguments);
             args[1] = _.assign({
                 onDispatch: this.props.onDispatch,
-                stores: this.props.stores
+                dispatcher: this.props.dispatcher
             }, args[1]);
             return React.createElement.apply(null, args);
         },

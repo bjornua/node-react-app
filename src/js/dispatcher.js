@@ -1,12 +1,11 @@
 /*global module, require */
 
+var coldstorage = require("coldstorage");
 
-var coldstorage = require('coldstorage');
-
-module.exports = coldstorage.fromStores([
-    require('./store/navigation.js'),
-    require('./store/sidemenu.js'),
-    require('./store/user.js')
+module.exports = coldstorage.createDispatcher([
+    require("./store/navigation.js"),
+    require("./store/sidemenu.js"),
+    require("./store/user.js")
 ]);
 
 

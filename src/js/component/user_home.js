@@ -1,30 +1,29 @@
 /*global require, module */
-/*jslint sloppy: true */
+"use strict";
 
-var React = require('react');
-var page = require('../component/wrappers/page');
-var env = require('../env');
-var UserStore = require('../store/user');
-var Q = require('q');
+var React = require("react");
+var page = require("../component/wrappers/page");
+var env = require("../env");
+var userStore = require("../store/user");
 
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore])],
+    mixins: [env.mixin()],
     statics: {
         initialTitle: function () {
-            return 'Page';
+            return "Page";
         },
         parent: page,
-        redirect: function (user) {
-            if (user.get('isAuthed') === false) {
-                return {key: 'user_signin'};
+        redirect: function (get) {
+            if (get(userStore).get("isAuthed") === false) {
+                return {key: "user_signin"};
             }
         }
     },
     render: function () {
-        return this.createElement('div', {},
-            React.createElement('h1', {}, ''),/*this.store(UserStore).username),*/
-            React.createElement('p', {}, 'Hello and welcome. This is your profile page.')
+        return this.createElement("div", {},
+            React.createElement("h1", {}, ""),/*this.store(UserStore).username),*/
+            React.createElement("p", {}, "Hello and welcome. This is your profile page.")
         );
     }
 });

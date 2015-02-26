@@ -1,18 +1,19 @@
 /*jslint sloppy: true */
 /*global require, module */
+"use strict";
 
-var React = require('react');
-var page = require('./wrappers/page');
-var link = require('./widget/link');
-var env = require('../env');
-var UserStore = require('../store/user');
+var React = require("react");
+var page = require("./wrappers/page");
+var link = require("./widget/link");
+var env = require("../env");
+var UserStore = require("../store/user");
 
 module.exports = React.createClass({
-    displayName: 'create_user',
+    displayName: "create_user",
     mixins: [env.mixin()],
     statics: {
         initialTitle: function () {
-            return 'Create User';
+            return "Create User";
         },
         parent: page
     },
@@ -30,19 +31,19 @@ module.exports = React.createClass({
     },
     getInitialState: function () {
         return {
-            email: '',//this.store(UserStore).username,
-            password: ''
+            email: "", //this.store(UserStore).username,
+            password: ""
         };
     },
     render: function () {
-        return this.createElement('div', {},
-            React.createElement('div', {className: "dh-maxw30"},
-                React.createElement('form',
+        return this.createElement("div", {},
+            React.createElement("div", {className: "dh-maxw30"},
+                React.createElement("form",
                     {onSubmit: this.createUser, className: "pure-form pure-form-stacked"},
-                    React.createElement('h1', {}, "Create User"),
-                    React.createElement('fieldset',
+                    React.createElement("h1", {}, "Create User"),
+                    React.createElement("fieldset",
                         {className: "pure-group"},
-                        React.createElement('input',
+                        React.createElement("input",
                             {
                                 className: "pure-input-1",
                                 type: "email",
@@ -52,7 +53,7 @@ module.exports = React.createClass({
                                 required: true
                             }
                         ),
-                        React.createElement('input',
+                        React.createElement("input",
                             {
                                 className: "pure-input-1",
                                 type: "password",
@@ -62,7 +63,7 @@ module.exports = React.createClass({
                                 required: true
                             }
                         ),
-                        React.createElement('input',
+                        React.createElement("input",
                             {
                                 className: "pure-input-1",
                                 type: "password",
@@ -73,8 +74,8 @@ module.exports = React.createClass({
                             }
                         )
                     ),
-                    React.createElement('button', {type: "submit", className: "pure-button pure-button-primary pure-input-1"}, "Create User"),
-                    React.createElement('p',
+                    React.createElement("button", {type: "submit", className: "pure-button pure-button-primary pure-input-1"}, "Create User"),
+                    React.createElement("p",
                         {className: "dh-centertext"},
                         "Or if you already have an account you can ",
                         this.createElement(link, {dest: "user_signin"}, " sign in here")
@@ -84,4 +85,3 @@ module.exports = React.createClass({
         );
     }
 });
-

@@ -5,57 +5,57 @@ var action = require('../action');
 var Immutable = require('immutable');
 var storeUser = require('./user');
 
-var store = coldstorage.createStore('navigation');
-
-store = store.on([action.setURL, action.setView, storeUser], function (setURL, setView, user) {
-    var urls = require('../urls');
-    var match;
-    if (setURL !== undefined) {
-        match = urls.match(setURL.get('url'));
-    } else if (setView !== undefined) {
-        var params = setView.get('params');
-        if (params === undefined) {
-            params = Immutable.Map();
+var store = coldstorage.createStore({
+    id: "navigation",
+    update: function (old, get) {
+        var urls = require("../urls");
+        var match;
+        if (get(action.setTitle) !== undefined) {
+            return old.set("title", get(action.setTitle).get("title"));
         }
-        match = urls.build(setView.get('key'), params.toJS());
-    } else if (this.size !== 0) {
-        match = {
-            value: this.get('handler'),
-            key: this.get('key'),
-            params: this.get('params'),
-            url: this.get('url')
-        };
-    }
-
-    if (match !== undefined) {
-        var redirect;
-        while (match.value.redirect !== undefined) {
-            redirect = match.value.redirect(user);
-            if (redirect !== undefined) {
-                match = urls.build(redirect.key, redirect.params);
-            } else {
-                break;
+        if (get(action.setURL) !== undefined) {
+            match = urls.match(get(action.setURL).get("url"));
+        } else if (get(action.setView) !== undefined) {
+            var params = get(action.setView).get("params");
+            if (params === undefined) {
+                params = Immutable.Map();
             }
+            match = urls.build(get(action.setView).get("key"), params.toJS());
+        } else if (old.size !== 0) {
+            match = {
+                value: old.get("handler"),
+                key: old.get("key"),
+                params: old.get("params"),
+                url: old.get("url")
+            };
         }
-        var handler = match.value;
-        var title;
-        if (handler.initialTitle !== undefined) {
-            title = handler.initialTitle();
+        if (match !== undefined) {
+            console.log('checking');
+            var redirect;
+            while (match.value.redirect !== undefined) {
+                redirect = match.value.redirect(get);
+                if (redirect !== undefined) {
+                    match = urls.build(redirect.key, redirect.params);
+                } else {
+                    break;
+                }
+            }
+            var handler = match.value;
+            var title;
+            if (handler.initialTitle !== undefined) {
+                title = handler.initialTitle();
+            }
+            var nextState = old.merge({
+                handler: handler,
+                key: match.key,
+                params: match.params,
+                url: match.url,
+                title: title
+            });
+            return nextState;
         }
-        var nextState = this.merge({
-            handler: handler,
-            key: match.key,
-            params: match.params,
-            url: match.url,
-            title: title
-        });
-        return nextState;
+        return old;
     }
-    return this;
-});
-
-store = store.on([action.setTitle], function (setTitle) {
-    return this.set('title', setTitle.get('title'));
 });
 
 module.exports = store;

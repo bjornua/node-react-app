@@ -1,5 +1,7 @@
-/*global require, module, process */
+/*global require */
 /*jslint sloppy: true */
+
+Error.stackTraceLimit = Infinity;
 
 var fs = require('fs');
 

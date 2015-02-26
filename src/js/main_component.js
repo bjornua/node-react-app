@@ -1,9 +1,10 @@
 /*global require, module, window */
-'use strict';
+"use strict";
 var React = require('react');
 var env = require('./env');
 var Immutable = require('immutable');
 var action = require('./action');
+var navigationStore = require('./store/navigation')
 
 var main_component = React.createClass({
     displayName: 'main_component',
@@ -18,13 +19,13 @@ var main_component = React.createClass({
     render: function () {
         var window = this.props.window;
         if (window !== undefined) {
-            if (window.document.location.pathname !== this.get('navigation', 'url')) {
-                window.history.pushState(null, null, this.get('navigation', 'url'));
+            if (window.document.location.pathname !== this.get(navigationStore, 'url')) {
+                window.history.pushState(null, null, this.get(navigationStore, 'url'));
             }
         }
-        var title = this.get('navigation', 'title');
+        var title = this.get(navigationStore, 'title');
 
-        var current = this.get('navigation', 'handler');
+        var current = this.get(navigationStore, 'handler');
         var handlers = Immutable.Stack();
         while (current !== undefined) {
             handlers = handlers.unshift(current);

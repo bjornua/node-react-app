@@ -1,24 +1,23 @@
 /*global require, module */
 /*jslint sloppy: true */
-
-var React = require('react');
-var page = require('./wrappers/page');
-var link = require('./widget/link');
-var env = require('../env');
-var UserStore = require('../store/user');
-var Q = require('q');
-var action = require('../action');
+"use strict";
+var React = require("react");
+var page = require("./wrappers/page");
+var link = require("./widget/link");
+var env = require("../env");
+var userStore = require("../store/user");
+var action = require("../action");
 
 module.exports = React.createClass({
-    mixins: [env.mixin([UserStore])],
+    mixins: [env.mixin()],
     statics: {
         initialTitle: function () {
-            return 'Create User';
+            return "Create User";
         },
         parent: page,
-        redirect: function (userStore) {
-            if (userStore.get('isAuthed') === true) {
-                return {key: 'user_home'};
+        redirect: function (get) {
+            if (get(userStore).get("isAuthed") === true) {
+                return {key: "user_home"};
             }
         }
     },
@@ -34,24 +33,24 @@ module.exports = React.createClass({
     },
     getInitialState: function () {
         return {
-            email: 'lala@lala.com',
-            password: '123'
+            email: "lala@lala.com",
+            password: "123"
         };
     },
     render: function () {
-        return this.createElement('div', {},
-                React.createElement('div', {className: "dh-maxw30"},
-                React.createElement('form', {onSubmit: this.signin, className: "pure-form pure-form-stacked"},
-                    React.createElement('h1', {}, "Sign In"),
-                    React.createElement('fieldset', {className: "pure-group"},
-                        React.createElement('input', {className: "pure-input-1", type: "email", onChange: this.emailChange, value: this.state.email, placeholder: "Your e-mail address", required: true}),
-                        React.createElement('input', {className: "pure-input-1", type: "password", onChange: this.passwordChange, value: this.state.password, placeholder: "Your password", required: true})
+        return this.createElement("div", {},
+                React.createElement("div", {className: "dh-maxw30"},
+                React.createElement("form", {onSubmit: this.signin, className: "pure-form pure-form-stacked"},
+                    React.createElement("h1", {}, "Sign In"),
+                    React.createElement("fieldset", {className: "pure-group"},
+                        React.createElement("input", {className: "pure-input-1", type: "email", onChange: this.emailChange, value: this.state.email, placeholder: "Your e-mail address", required: true}),
+                        React.createElement("input", {className: "pure-input-1", type: "password", onChange: this.passwordChange, value: this.state.password, placeholder: "Your password", required: true})
                     ),
-                    React.createElement('button', {type: "submit", className: "pure-button pure-button-primary pure-input-1"},
+                    React.createElement("button", {type: "submit", className: "pure-button pure-button-primary pure-input-1"},
                         "Sign In"
                     )
                 ),
-                React.createElement('p', {className: "dh-centertext"},
+                React.createElement("p", {className: "dh-centertext"},
                     "Or if you don't have an account you can ",
                     this.createElement(link, {dest: "user_create"}, " create one here")
                 )

@@ -1,17 +1,21 @@
 /*global module, require, console */
-'use strict';
+"use strict";
 
-var coldstorage = require('coldstorage');
-var action = require('../action');
-var storeNavigation = require('./navigation');
+var coldstorage = require("coldstorage");
+var action = require("../action");
+var storeNavigation = require("./navigation");
 
-var store = coldstorage.createStore('sidemenu');
-
-store = store.on([action.init, storeNavigation, action.sidemenuHide], function () {
-    return this.set('show', false);
-});
-store = store.on([action.sidemenuShow], function () {
-    return this.set('show', true);
+var store = coldstorage.createStore({
+    id: "sidemenu",
+    update: function (old, get) {
+        if (get(action.init) !== undefined || get(action.sidemenuHide) !== undefined) {
+            return old.set("show", false);
+        }
+        if (get(action.sidemenuShow) !== undefined) {
+            return old.set("show", true);
+        }
+        return old;
+    }
 });
 
 module.exports = store;
