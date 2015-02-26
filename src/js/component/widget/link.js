@@ -1,19 +1,19 @@
 /*global require, module */
+"use strict";
 
-var React = require('react');
-var urls = require('../../urls');
-var env = require('../../env');
-var action = require('../../action');
+var React = require("react");
+var urls = require("../../urls");
+var env = require("../../env");
+var action = require("../../action");
 
 module.exports = React.createClass({
     mixins: [env.mixin()],
     render: function () {
-        'use strict';
         var self = this;
 
         var link, url;
         if (self.props.callback !== undefined) {
-            url = '';
+            url = "";
             link = function (e) {
                 e.preventDefault();
                 self.props.callback();
@@ -26,7 +26,7 @@ module.exports = React.createClass({
             };
         }
         return (
-            React.createElement('a', {href: url, onClick: link, className: this.props.className},
+            React.createElement("a", {href: url, onClick: link, className: this.props.className},
                 this.props.children
             )
         );

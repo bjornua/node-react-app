@@ -1,25 +1,26 @@
 /*global module, require, console */
-"use strict"
+"use strict";
 
-var React = require('react');
-var action = require('./action');
-var Q = require('q');
-var _ = require('lodash');
-var NavigationStore = require('./store/navigation');
+var React = require("react");
+var actions = require("./action");
+// var Q = require("q");
+var _ = require("lodash");
+
+// var NavigationStore = require("./store/navigation");
 
 
 function create(initialURL, window) {
-    var dispatcher = require('./dispatcher');
-    var main_component = require('./main_component');
-    var urls = require('./urls');
+    var dispatcher = require("./dispatcher");
+    var mainComponent = require("./main_component");
+    var urls = require("./urls");
 
-    dispatcher = dispatcher.dispatch(action.init);
-    dispatcher = dispatcher.dispatch(action.setURL, {url: initialURL});
+    dispatcher = dispatcher.dispatch(actions.init);
+    dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
 
-    return React.createElement(main_component, {urls: urls, dispatcher: dispatcher, window: window});
+    return React.createElement(mainComponent, {urls: urls, dispatcher: dispatcher, window: window});
 }
 
-function top_mixin() {
+function mixinTop() {
     return {
         dispatch: function (eventname, payload) {
             return this.onDispatch(eventname, payload);
@@ -77,5 +78,5 @@ function mixin() {
 module.exports = {
     create: create,
     mixin: mixin,
-    top_mixin: top_mixin
+    mixinTop: mixinTop
 };

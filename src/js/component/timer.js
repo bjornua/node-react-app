@@ -1,15 +1,16 @@
 /*global require, module, setInterval, clearInterval */
 /*jslint sloppy: true */
+"use strict";
 
-var React = require('react');
-var page = require('./wrappers/page');
-var env = require('../env');
-var action = require('../action');
+var React = require("react");
+var page = require("./wrappers/page");
+var env = require("../env");
+var action = require("../action");
 
 module.exports = React.createClass({
     statics: {
         initialTitle: function () {
-            return 'Timer: 0';
+            return "Timer: 0";
         },
         parent: page
     },
@@ -21,7 +22,7 @@ module.exports = React.createClass({
     },
     tick: function () {
         var newTime = this.state.secondsElapsed + 1;
-        this.dispatch(action.setTitle, {title: 'Timer: ' + String(newTime)});
+        this.dispatch(action.setTitle, {title: "Timer: " + String(newTime)});
         this.setState({secondsElapsed: newTime});
     },
     componentDidMount: function () {
@@ -31,9 +32,9 @@ module.exports = React.createClass({
         clearInterval(this.interval);
     },
     render: function () {
-        return React.createElement('span', {},
+        return React.createElement("span", {},
             "Seconds Elapsed: ",
-            React.createElement('span', {}, this.state.secondsElapsed)
+            React.createElement("span", {}, this.state.secondsElapsed)
         );
     }
 });

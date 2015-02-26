@@ -6,7 +6,6 @@ var React = require("react");
 var page = require("./wrappers/page");
 var link = require("./widget/link");
 var env = require("../env");
-var UserStore = require("../store/user");
 
 module.exports = React.createClass({
     displayName: "create_user",

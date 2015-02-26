@@ -1,10 +1,10 @@
 /*global module, require, console */
-'use strict';
+"use strict";
 
-var Immutable = require('immutable');
-var coldstorage = require('coldstorage');
-var storeUser = require('./user');
-var action = require('../action');
+var Immutable = require("immutable");
+var coldstorage = require("coldstorage");
+var storeUser = require("./user");
+var action = require("../action");
 // var store = coldstorage.createStore('messages');
 
 // var putMessage = function (store, key, payload) {

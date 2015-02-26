@@ -1,10 +1,9 @@
-/*global require, module */
-/*jslint sloppy: true */
+"use strict";
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 function strtoregex(s) {
-    s = s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, '\\$&');
+    s = s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     return new RegExp(s);
 }
 function encodeURIComponent_exceptslash(s) {
@@ -45,10 +44,10 @@ function converter_static(options) {
 }
 
 module.exports = {
-    'builtin': {
-        'static': converter_static,
-        'str': converter_string,
-        'path': converter_path,
-        'int': converter_integer
+    "builtin": {
+        "static": converter_static,
+        "str": converter_string,
+        "path": converter_path,
+        "int": converter_integer
     }
 };

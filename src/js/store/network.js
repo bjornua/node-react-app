@@ -1,15 +1,15 @@
 /*global module, require, console */
-var createStore = require('dispatchr/utils/createStore');
+var createStore = require("dispatchr/utils/createStore");
 
 module.exports = createStore({
-    storeName: 'user',
+    storeName: "user",
     initialize: function () {
-        'use strict';
+        "use strict";
         this.isAuthed = false;
     },
     handlers: {
         signin: function (payload) {
-            'use strict';
+            "use strict";
             var self = this;
             setTimeout(function () {
                 self.username = payload.username;
@@ -18,7 +18,7 @@ module.exports = createStore({
             }, 1000);
         },
         signout: function () {
-            'use strict';
+            "use strict";
             this.isAuthed = false;
             this.emitChange();
         }

@@ -2,6 +2,7 @@
   "name": "dotarally",
   "devDependencies": {
     "browserify": ">=7.0.0",
+    "eslint": "^0.15.1",
     "express": ">=4.4.5",
     "gulp": ">=3.8.10",
     "gulp-less": ">=2.0.1",
@@ -21,6 +22,6 @@
   },
   "scripts": {
     "start": "gulp",
-    "test": "nodeunit src/js/test"
+    "test": "nodeunit src/js/test &&  eslint src/js"
   }
 }
