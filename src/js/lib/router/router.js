@@ -1,23 +1,23 @@
 /*global require, module */
-/*jslint sloppy: true */
+"use strict";
 
-var _ = require('lodash');
-var utils = require('../../lib/utils');
-var rule = require('./rule');
-var m_converters = require('./converters');
+var _ = require("lodash");
+var utils = require("../../lib/utils");
+var rule = require("./rule");
+var convertersBuiltin = require("./converters");
 
 function createRouter(options) {
     options = _.assign({
         converters: {},
         patterns: []
     }, options);
-    var router_converters = _.assign(m_converters.builtin, options.converters);
+    var counvertersRouter = _.assign(convertersBuiltin.builtin, options.converters);
     var matchers = [];
     var keys = {};
 
-    function add(pattern, key, value, extra_converters) {
-        var rule_converters = _.assign(router_converters, extra_converters);
-        var retval = [rule(pattern, rule_converters), value];
+    function add(pattern, key, value, convertersExtra) {
+        var converters = _.assign(counvertersRouter, convertersExtra);
+        var retval = [rule(pattern, converters), value];
         if (keys[key] === undefined) {
             keys[key] = [];
         }
@@ -39,31 +39,31 @@ function createRouter(options) {
                 return false;
             }
         });
-        utils.assert(res, 'No match {}', url);
+        utils.assert(res, "No match {}", url);
         return res;
     }
-    function build(key, options) {
+    function build(key, params) {
         var matches = keys[key];
-        utils.assert(matches, 'Could not find route with key {}', key);
+        utils.assert(matches, "Could not find route with key {}", key);
 
         var res;
         _.forEach(matches, function (set) {
-            var path = set[0].build(options);
+            var path = set[0].build(params);
             if (path !== null) {
                 res = {
                     url: path,
                     value: set[1],
                     key: key,
-                    params: options
+                    params: params
                 };
                 return false;
             }
         });
         utils.assert(
             res,
-            'Argument error {}, tried patterns: {}',
-            _.keys(options),
-            _.pluck(_.pluck(matches, 0), 'pattern')
+            "Argument error {}, tried patterns: {}",
+            _.keys(params),
+            _.pluck(_.pluck(matches, 0), "pattern")
 
         );
         return res;

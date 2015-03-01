@@ -1,24 +1,24 @@
 /*global require, module */
-/*jslint sloppy: true */
+"use strict";
 
-var _ = require('lodash');
-var utils = require('../../lib/utils');
+var _ = require("lodash");
+var utils = require("../../lib/utils");
 
 
 var RE_PARAM = /<([^:>]+):([^>]+)>/;
 
 // Detect how many match group
-function re_groupcount(r) {
-    r = new RegExp('.*|(' + r.source + ')');
-    return r.exec('').length - 2;
+function reGroupcount(r) {
+    r = new RegExp(".*|(" + r.source + ")");
+    return r.exec("").length - 2;
 }
 
 function parsepattern(path) {
     var matches = path.split(RE_PARAM);
     matches = utils.chunk(matches, 3);
     matches = _.transform(matches, function (r, v) {
-        if (v[0] !== '') {
-            r.push({type: 'static', name: null, options: {'str': v[0]}});
+        if (v[0] !== "") {
+            r.push({type: "static", name: null, options: {"str": v[0]}});
         }
         if (v[2] !== undefined) {
             r.push({type: v[1], name: v[2]});
@@ -31,7 +31,7 @@ function compilepattern(pattern, converters) {
     var idx = 1;
     var parsers = _.transform(parsepattern(pattern), function (res, v) {
         var converter = converters[v.type];
-        utils.assert(converter, 'Unknown converter {}', v.type);
+        utils.assert(converter, "Unknown converter {}", v.type);
         converter = converter(v.options);
         res.push({
             idx: idx,
@@ -42,34 +42,34 @@ function compilepattern(pattern, converters) {
             parse: converter.parse,
             unparse: converter.unparse
         });
-        idx += re_groupcount(converter.match) + 1;
+        idx += reGroupcount(converter.match) + 1;
     }, []);
     return parsers;
 }
 
 function Rule(pattern, converters) {
     var components = compilepattern(pattern, converters);
-    var re_pattern = _.map(components, function (component) {
-        return '(' + component.match.source + ')';
+    var rePattern = _.map(components, function (component) {
+        return "(" + component.match.source + ")";
     });
-    re_pattern = new RegExp('^' + re_pattern.join('') + '$');
+    rePattern = new RegExp("^" + rePattern.join("") + "$");
 
-    var named_components = _.filter(components, function (component) {
+    var namedCompontents = _.filter(components, function (component) {
         return component.name !== null;
     });
 
     function matcher(s) {
-        var m = s.match(re_pattern);
+        var m = s.match(rePattern);
         if (m === null) {
             return null;
         }
-        return _.transform(named_components, function (options, component) {
+        return _.transform(namedCompontents, function (options, component) {
             var strval = m[component.idx];
             strval = decodeURIComponent(strval);
             options[component.name] = component.parse(strval);
         }, {});
     }
-    var available_options = _.transform(components, function (result, v) {
+    var availableOptions = _.transform(components, function (result, v) {
         if (v.name !== null) {
             result.push(v.name);
         }
@@ -77,7 +77,7 @@ function Rule(pattern, converters) {
 
     function builder(options) {
         options = _.assign({}, options);
-        if (_.size(_.difference(available_options, _.keys(options))) !== 0) {
+        if (_.size(_.difference(availableOptions, _.keys(options))) !== 0) {
             return null;
         }
 
@@ -88,10 +88,10 @@ function Rule(pattern, converters) {
             var option = options[component.name];
             return component.unparse(option);
         });
-        return parts.join('');
+        return parts.join("");
     }
     return {
-        available_options: available_options,
+        availableOptions: availableOptions,
         pattern: pattern,
         build: builder,
         match: matcher

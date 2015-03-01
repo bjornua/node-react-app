@@ -3,7 +3,7 @@
 
 var coldstorage = require("coldstorage");
 var action = require("../action");
-var storeNavigation = require("./navigation");
+// var storeNavigation = require("./navigation");
 
 var store = coldstorage.createStore({
     id: "sidemenu",

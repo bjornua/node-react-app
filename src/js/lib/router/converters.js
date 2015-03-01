@@ -6,14 +6,14 @@ function strtoregex(s) {
     s = s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
     return new RegExp(s);
 }
-function encodeURIComponent_exceptslash(s) {
+function encodeURIComponentExceptSlash(s) {
     s = String(s);
     s = s.split("/");
     s = _.map(s, encodeURIComponent);
     return s.join("/");
 }
 
-function converter_integer() {
+function converterInteger() {
     return {
         match: /[0-9]+/,
         parse: parseInt,
@@ -22,21 +22,21 @@ function converter_integer() {
         }
     };
 }
-function converter_string() {
+function converterString() {
     return {
         match: /[^\/]+/,
         parse: _.identity,
         unparse: encodeURIComponent
     };
 }
-function converter_path() {
+function converterPath() {
     return {
         match: /.+/,
         parse: _.identity,
-        unparse: encodeURIComponent_exceptslash
+        unparse: encodeURIComponentExceptSlash
     };
 }
-function converter_static(options) {
+function converterStatic(options) {
     return {
         match: strtoregex(options.str),
         unparse: _.constant(options.str)
@@ -45,9 +45,9 @@ function converter_static(options) {
 
 module.exports = {
     "builtin": {
-        "static": converter_static,
-        "str": converter_string,
-        "path": converter_path,
-        "int": converter_integer
+        "static": converterStatic,
+        "str": converterString,
+        "path": converterPath,
+        "int": converterInteger
     }
 };

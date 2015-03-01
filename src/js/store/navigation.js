@@ -1,9 +1,8 @@
-'use strict';
+"use strict";
 
-var coldstorage = require('coldstorage');
-var action = require('../action');
-var Immutable = require('immutable');
-var storeUser = require('./user');
+var coldstorage = require("coldstorage");
+var action = require("../action");
+var Immutable = require("immutable");
 
 var store = coldstorage.createStore({
     id: "navigation",
@@ -30,7 +29,6 @@ var store = coldstorage.createStore({
             };
         }
         if (match !== undefined) {
-            console.log('checking');
             var redirect;
             while (match.value.redirect !== undefined) {
                 redirect = match.value.redirect(get);

@@ -1,10 +1,10 @@
 /*global module, require */
 module.exports = (function (require) {
-    'use strict';
-    var createStore = require('dispatchr/utils/createStore');
+    "use strict";
+    var createStore = require("dispatchr/utils/createStore");
 
     return createStore({
-        storeName: 'title',
+        storeName: "title",
         initialize: function () {
             this.title = null;
         },
@@ -17,7 +17,7 @@ module.exports = (function (require) {
             //     this.title = null;
             //     this.emitChange();
             // },
-            'setTitle': function (payload) {
+            "setTitle": function (payload) {
                 this.title = payload;
                 this.emitChange();
             }

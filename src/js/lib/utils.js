@@ -1,11 +1,11 @@
 /*global require, module */
-/*jslint sloppy: true */
+"use strict";
 
-var _ = require('lodash');
+var _ = require("lodash");
 
 function format(msg) {
     var args = _.toArray(arguments).slice(1);
-    msg = msg.split('{}');
+    msg = msg.split("{}");
     msg = _.map(msg, function (m, i) {
         if (i + 1 === msg.length) {
             return [m];
@@ -34,7 +34,7 @@ function chunk(array, n) {
 }
 
 module.exports = {
-    'assert': assert,
-    'format': format,
-    'chunk': chunk
+    "assert": assert,
+    "format": format,
+    "chunk": chunk
 };
