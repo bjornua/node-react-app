@@ -3,10 +3,8 @@
 var React = require("react");
 var link = require("./link");
 var env = require("../../env");
-var UserStore = require("../../store/user");
 var MenuStore = require("../../store/menu");
 var action = require("../../action");
-var Immutable = require("immutable");
 
 module.exports = React.createClass({
     mixins: [env.mixin()],
