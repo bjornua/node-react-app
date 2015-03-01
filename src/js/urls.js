@@ -1,4 +1,3 @@
-/*jslint sloppy: true */
 /*global require, module */
 var router = require("./lib/router/router");
 var r = router.createRouter();

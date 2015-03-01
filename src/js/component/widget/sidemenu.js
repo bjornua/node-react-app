@@ -1,42 +1,44 @@
-/*global require, module */
-/*jslint sloppy: true */
 "use strict";
 
 var React = require("react");
-var link = require("./link");
+var Link = require("./link");
 var env = require("../../env");
-var _ = require("lodash");
 var action = require("../../action");
-var userStore = require("../../store/user");
+var MenuStore = require("../../store/menu");
+var Immutable = require("immutable");
+
 module.exports = React.createClass({
     mixins: [env.mixin()],
     render: function () {
-        var menu = [];
         var self = this;
-        menu.push(["wqe", {callback: function () {
-            self.dispatch(action.sidemenuHide);
-        }}, "Close"]);
-        if (!this.get(userStore, "isAuthed")) {
-            menu.push([0, {dest: "user_create"}, "Create user"]);
-            menu.push([1, {dest: "user_signin"}, "Sign in"]);
-        } else {
-            menu.push([2, {dest: "user_home"}, "Dashboard"]);
-            menu.push([3, {dest: "timer"}, "Timer Test App"]);
-            menu.push([4, {callback: function () {
-                self.dispatch(action.signout);
-            }}, "Sign out"]);
-        }
 
-        menu = _.map(menu, function (item) {
-            //var isActive = this.store(RouterStore).key === item[1].dest;
+        var menu = this.get(MenuStore);
+        menu = menu.unshift(Immutable.Map({
+            callback: function () {
+                self.dispatch(action.sidemenuHide);
+            },
+            title: "Close"
+        }));
+
+        menu = menu.map(function (item, key) {
+            var isActive = false; //this.store(RouterStore).key === item[1].dest;
+            var link;
+            if (item.has("dest")) {
+                link = this.createElement(Link, {dest: item.get("dest")}, item.get("title"));
+            } else if (item.has("callback")) {
+                link = this.createElement(Link, {callback: item.get("callback")}, item.get("title"));
+            }
+
             return React.createElement("li", {
-                    key: item[0]
+                    key: key,
+                    className: isActive ? "pure-menu-selected" : ""
                 },
-                this.createElement(link, item[1], item[2])
+                link
             );
         }, this);
+
         return React.createElement("ul", {className: "dh-sidemenu"},
-            menu
+            menu.toJS()
         );
     }
 });

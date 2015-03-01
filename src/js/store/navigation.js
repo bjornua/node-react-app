@@ -43,14 +43,13 @@ var store = coldstorage.createStore({
             if (handler.initialTitle !== undefined) {
                 title = handler.initialTitle();
             }
-            var nextState = old.merge({
+            return old.merge({
                 handler: handler,
                 key: match.key,
                 params: match.params,
                 url: match.url,
                 title: title
             });
-            return nextState;
         }
         return old;
     }

@@ -1,4 +1,3 @@
-/*global module, require, console */
 "use strict";
 
 var coldstorage = require("coldstorage");
@@ -13,6 +12,12 @@ var store = coldstorage.createStore({
         }
         if (get(action.sidemenuShow) !== undefined) {
             return old.set("show", true);
+        }
+        if (get(action.setView) !== undefined) {
+            return old.set("show", false);
+        }
+        if (get(action.setURL) !== undefined) {
+            return old.set("show", false);
         }
         return old;
     }
