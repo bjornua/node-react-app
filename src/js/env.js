@@ -17,7 +17,12 @@ function create(initialURL, window) {
     dispatcher = dispatcher.dispatch(actions.init);
     dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
 
-    return React.createElement(mainComponent, {urls: urls, dispatcher: dispatcher, window: window});
+    var component = React.createElement(mainComponent, {
+        urls: urls,
+        dispatcher: dispatcher,
+        onDispatch: 
+        window: window
+    });
 }
 
 function mixinTop() {

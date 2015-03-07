@@ -1,5 +1,3 @@
-/*global require, module */
-/*jslint sloppy: true */
 "use strict";
 
 var React = require("react");

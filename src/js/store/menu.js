@@ -13,6 +13,8 @@ var store = coldstorage.createStore({
     update: function (old, get) {
         var list = IList();
 
+        list = list.push(IMap({dest: "google_images", title: "Google Images"}));
+
         if (get(UserStore).get("isAuthed") !== true) {
             list = list.push(IMap({dest: "user_create", title: "Create user"}));
             list = list.push(IMap({dest: "user_signin", title: "Sign in"}));
