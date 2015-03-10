@@ -24,6 +24,8 @@ module.exports = React.createClass({
         var images = Immutable.Range(0, 10).map(function (val) {
             return React.createElement("img", {
                 key: val,
+                height: 200,
+                width: 200,
                 src: "http://lorempixel.com/200/200/?" + String(val)}
             );
         });

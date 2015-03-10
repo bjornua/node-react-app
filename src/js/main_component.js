@@ -8,7 +8,7 @@ var NavigationStore = require("./store/navigation");
 
 var MainComponent = React.createClass({
     displayName: "MainComponent",
-    mixins: [env.mixinTop()],
+    mixins: [env.mixin()],
 
     componentDidMount: function () {
         window.onpopstate = function () {
