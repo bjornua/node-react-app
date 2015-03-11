@@ -4,7 +4,6 @@ var React = require("react");
 var page = require("./wrappers/page");
 var Immutable = require("immutable");
 var env = require("../env");
-var action = require("../action");
 
 module.exports = React.createClass({
     displayName: "images",
