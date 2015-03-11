@@ -20,7 +20,13 @@ onDispatch = function (action, payload) {
 async = function () {
     var StoreAsync = require("./store/async");
     var queued = dispatcher.get([StoreAsync, "queued"]);
+
+    queued.map(function (val) {
+        console.log("Queueing");
+    })
     console.log(String(store));
+
+    dispatcher = dispatcher.dispatch
 };
 
 render = function () {
