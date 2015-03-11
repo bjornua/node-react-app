@@ -1,23 +1,34 @@
-/*global require, window */
 "use strict";
 
 var React = require("react");
 var env = require("./env");
 
 
-var component;
-var onStore = function (newStore) {
-    component.setProps({store: newStore});
+var dispatcher = env.createDispatcher(
+    window.document.location.pathname
+);
+
+
+var render, async, onDispatch;
+
+onDispatch = function (action, payload) {
+    dispatcher = dispatcher.dispatch(action, payload);
+    async();
+    render();
 };
 
-component = React.render(env.create(
-    window.document.location.pathname, window, onStore
-), window.document);
+async = function () {
+    var StoreAsync = require("./store/async");
+    var queued = dispatcher.get([StoreAsync, "queued"]);
+    console.log(String(store));
+};
 
+render = function () {
+    React.render(env.createElement({
+        dispatcher: dispatcher,
+        window: window,
+        onDispatch: onDispatch
+    }), window.document);
+};
 
-
-
-/*env.create(window.document.location.pathname).then(function (component) {
-    "use strict";
-    React.render(component, window.document);
-});*/
+render();

@@ -10,5 +10,6 @@ module.exports = coldstorage.createActions(
     "sidemenuShow",
     "signin",
     "signout",
-    "setTitle"
+    "setTitle",
+    "async_queued"
 );

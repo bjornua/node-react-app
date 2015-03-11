@@ -8,7 +8,10 @@ var env = require("../env");
 function handleRequest(req, res) {
     res.charset = "utf-8";
     res.header("Content-Type", "text/html");
-    var component = env.create(req.url);
+
+    var dispatcher = env.createDispatcher(req.url);
+    var component = env.createElement({dispatcher: dispatcher});
+
     var body = React.renderToString(component);
     req.socket.setNoDelay(true);
     req.socket.setKeepAlive(false);

@@ -2,8 +2,9 @@
 /*jslint sloppy: true */
 "use strict";
 
-var React = require("react/addons");
+var React = require("react");
 var sidemenuStore = require("../../store/sidemenu");
+var classnames = require("classnames");
 
 var link = require("../widget/link");
 var topmenu = require("../widget/topmenu");
@@ -16,8 +17,7 @@ var base = React.createClass({
     mixins: [env.mixin([SidemenuStore])],
     displayName: "base",
     render: function () {
-        var baseClasses = React.addons.classSet({
-            "dh-base": true,
+        var baseClasses = classnames("dh-base", {
             "dh-sidemenu-open": this.get(sidemenuStore, "show")
         });
         return React.createElement("div", {className: baseClasses},

@@ -5,24 +5,28 @@ var _ = require("lodash");
 var React = require("react");
 var actions = require("./action");
 
-function create(initialURL, window, onStore) {
+
+function createDispatcher(initialURL) {
     var dispatcher = require("./dispatcher");
+    dispatcher = dispatcher.dispatch(actions.init);
+    dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
+
+    return dispatcher;
+}
+
+function createElement(options) {
     var mainComponent = require("./main_component");
     var urls = require("./urls");
 
-    dispatcher = dispatcher.dispatch(actions.init);
-    dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
-    var onDispatch = function (action, payload) {
-        dispatcher = dispatcher.dispatch(action, payload);
-        onStore(dispatcher.get);
-    };
     return React.createElement(mainComponent, {
         urls: urls,
-        store: dispatcher.get,
-        onDispatch: onDispatch,
-        window: window
+        store: options.dispatcher.get,
+        onDispatch: options.onDispatch,
+        window: options.window
     });
 }
+
+
 
 function mixin() {
     return {
@@ -50,6 +54,7 @@ function mixin() {
 }
 
 module.exports = {
-    create: create,
+    createElement: createElement,
+    createDispatcher: createDispatcher,
     mixin: mixin
 };

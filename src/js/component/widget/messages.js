@@ -1,7 +1,8 @@
 
 "use strict";
 
-var React = require("react/addons");
+var React = require("react");
+var classnames = require("classnames");
 // var link = require("../widget/link");
 var env = require("../../env");
 var MsgStore = require("../../store/messages");
@@ -43,11 +44,12 @@ module.exports = React.createClass({
         var current = {};// = this.store(MsgStore).current;
         var self = this;
         var msg = function (classname) {
-            var classes = React.addons.classSet({
-                "dh-messages": true,
-                "dh-messages-hidden": self.state.hide,
-                "dh-messages-icon": classname !== null
-            });
+            var classes = classnames(
+                "dh-messages", {
+                    "dh-messages-hidden": self.state.hide,
+                    "dh-messages-icon": classname !== null
+                }
+            );
             if (classname !== null) {
                 classes += " dh-messages-icon-" + classname;
             }
