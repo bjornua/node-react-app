@@ -29,7 +29,15 @@ var store = coldstorage.createStore({
         old = old.update("queued", function (oldwaiting) {
             return queued.concat(oldwaiting);
         });
-        console.log(String(old));
+
+
+        if (get(action.asyncStart) !== undefined) {
+            var id = get(action.asyncStart).get("id");
+            var item = old.get("");
+
+            console.log(id);
+        }
+
         return old;
     }
 });

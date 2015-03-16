@@ -11,5 +11,5 @@ module.exports = coldstorage.createActions(
     "signin",
     "signout",
     "setTitle",
-    "async_queued"
+    "asyncStart"
 );
