@@ -14,6 +14,7 @@ module.exports = React.createClass({
         },
         async: function () {
             return {
+                id: "google_images",
                 url: "https://ajax.googleapis.com/ajax/services/search/images?v=1.0&q=fuzzy%20monkey"
             };
         },

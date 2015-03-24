@@ -2,27 +2,16 @@
 
 var React = require("react");
 var env = require("./env");
-var action = require("./action");
+
+var asyncSpawner = require("./store/async").spawner;
 
 var dispatcher = env.createDispatcher(
     window.document.location.pathname
 );
 
-
-var async = function () {
-    var StoreAsync = require("./store/async");
-    var queued = dispatcher.get([StoreAsync, "queued"]);
-
-    queued.map(function (val) {
-        console.log("Queueing");
-    });
-    console.log(String(queued));
-    dispatcher = dispatcher.dispatch(action.asyncStart, {});
-};
-
 var render;
 var update = function () {
-    async();
+    dispatcher = asyncSpawner(dispatcher);
     render();
 };
 
