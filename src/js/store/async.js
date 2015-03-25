@@ -39,18 +39,23 @@ var store = coldstorage.createStore({
         if (get(action.setURL) !== undefined || get(action.setView) !== undefined) {
             
         }
-
-        old = old.update("queued", function (oldwaiting) {
-            return queued.concat(oldwaiting);
-        });
-
+        return state;
+    },
+    function (state, get) {
         if (get(action.asyncStart) !== undefined) {
             var items = get(action.asyncStart).get("items");
-            queued = old.get("queued");
-            
+            queued = state.get("queued");
         }
+        return state;
+    }
+];
 
-        return old;
+var store = coldstorage.createStore({
+    id: "async",
+    update: function (state, get) {
+
+
+        return state;
     }
 });
 
