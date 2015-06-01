@@ -7,6 +7,7 @@ var constants = {
     setView: "setView",
     setTitle: "setTitle"
 };
+
 Marty.createConstants(["setURL", "setView", "setTitle"]);
 
 var store = Marty.createStore({
