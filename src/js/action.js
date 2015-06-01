@@ -1,8 +1,8 @@
 "use strict";
 
-var coldstorage = require("coldstorage");
+var fluxxor = require("fluxxor");
 
-module.exports = coldstorage.createActions(
+module.exports = {
     "init",
     "setView",
     "setURL",

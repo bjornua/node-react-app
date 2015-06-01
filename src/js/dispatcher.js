@@ -1,11 +1,7 @@
 "use strict";
 
-var coldstorage = require("coldstorage");
+var Marty = require("marty");
 
-module.exports = coldstorage.createDispatcher([
-    require("./store/navigation.js"),
-    require("./store/sidemenu.js"),
-    require("./store/async.js").store,
-    require("./store/user.js"),
-    require("./store/menu.js")
-]);
+module.exports = Marty.createApplication(function () {
+    this.register("navigation", require("./store/navigation"));
+});

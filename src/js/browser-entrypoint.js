@@ -3,7 +3,7 @@
 var React = require("react");
 var env = require("./env");
 
-var asyncSpawner = require("./store/async").spawner;
+// var asyncSpawner = require("./store/async").spawner;
 
 var dispatcher = env.createDispatcher(
     window.document.location.pathname
@@ -11,7 +11,7 @@ var dispatcher = env.createDispatcher(
 
 var render;
 var update = function () {
-    dispatcher = asyncSpawner(dispatcher);
+    // dispatcher = asyncSpawner(dispatcher);
     render();
 };
 

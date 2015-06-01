@@ -13,16 +13,5 @@
     ],
     "settings": {
         "tab_size": 4
-    },
-    "SublimeLinter":
-    {
-        "linters":
-        {
-            "jslint": {
-                "@disable": false,
-                "args": ["--edition=latest", "--node=true", "--vars=true", "--nomen=true", "--regexp=true"],
-                "excludes": []
-            }
-        }
     }
 }
