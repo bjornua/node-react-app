@@ -2,12 +2,6 @@
 
 var Marty = require("marty");
 
-var constants = {
-    setURL: "setURL",
-    setView: "setView",
-    setTitle: "setTitle"
-};
-
 Marty.createConstants(["setURL", "setView", "setTitle"]);
 
 var store = Marty.createStore({
@@ -18,42 +12,54 @@ var store = Marty.createStore({
         };
     },
     handlers: {
-        onSetURL: constants.setURL,
-        onSetView: constants.setView,
-        onSetTitle: constants.setTitle
+        setURL: constants.setURL,
+        setView: constants.setView,
+        setTitle: constants.setTitle
     },
     resetTitle: function () {
-        this.title = this.handler.getInitialTitle();
+        this.setTitle(this.state.match.value.getInitialTitle());
     },
-    resolveRedirects: function (match, cb) {
+    setTitle: function (title) {
+        this.setState({
+            title: title
+        });
+    },
+    setURL: function (url) {
+        var urls = require("../urls");
+        var match = urls.match(url);
+        this.setMatch();
+        this.resolveRedirects(match);
+        this.resetTitle();
+    },
+    setView: function (key, params) {
+        var urls = require("../urls");
+        var match = urls.build(key, params || {});
+        this.setMatch
+        match = this.resolveRedirects(match);
+        this.resetTitle();
+    },
+    setMatch: function (match, force) {
         var urls = require("../urls");
         var redirect;
+        var wasRedirected = false;
         while (match.value.redirect !== undefined) {
             redirect = match.value.redirect();
             if (redirect !== undefined) {
+                wasRedirected = true;
                 match = urls.build(redirect.key, redirect.params);
             } else {
                 break;
             }
         }
-        return match;
-    },
-    onSetURL: function (payload) {
-        var urls = require("../urls");
-        this.match = urls.match(payload.url);
-        this.resolveRedirects();
-        this.resetTitle();
-    },
-    onSetView: function (payload) {
-        var urls = require("../urls");
-        this.match = urls.build(payload.key, this.params || {});
-        this.resolveRedirects();
-        this.resetTitle();
-    },
-    onSetTitle: function (payload) {
-
+        if (wasRedirected === true || force === true) {
+            this.setState({
+                title: match.value.getInitialTitle(),
+                match: match
+            });
+        }
     }
 });
+
 /*
 module.exports = coldstorage.createModule({
     id: "navigation",
