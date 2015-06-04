@@ -3,11 +3,10 @@
 
 var _ = require("lodash");
 var React = require("react");
-var actions = require("./action");
 
 
 function createDispatcher(initialURL) {
-    var dispatcher = require("./dispatcher");
+    var dispatcher = require("./dispatcher")();
     dispatcher = dispatcher.dispatch(actions.init);
     dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
 

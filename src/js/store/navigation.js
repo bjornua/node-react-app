@@ -27,16 +27,12 @@ var store = Marty.createStore({
     setURL: function (url) {
         var urls = require("../urls");
         var match = urls.match(url);
-        this.setMatch();
-        this.resolveRedirects(match);
-        this.resetTitle();
+        this.setMatch(match, true);
     },
     setView: function (key, params) {
         var urls = require("../urls");
         var match = urls.build(key, params || {});
-        this.setMatch
-        match = this.resolveRedirects(match);
-        this.resetTitle();
+        this.setMatch(match, true);
     },
     setMatch: function (match, force) {
         var urls = require("../urls");
