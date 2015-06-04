@@ -2,7 +2,7 @@
 
 var Marty = require("marty");
 
-Marty.createConstants(["setURL", "setView", "setTitle"]);
+var constants = Marty.createConstants(["setURL", "setView", "setTitle"]);
 
 var store = Marty.createStore({
     getInitialState: function () {
