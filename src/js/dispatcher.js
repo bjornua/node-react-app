@@ -3,5 +3,8 @@
 var Marty = require("marty");
 
 module.exports = Marty.createApplication(function () {
-    this.register("navigation", require("./store/navigation"));
+    this.register({
+        store: require("./store"),
+        action: require("./action")
+    });
 });

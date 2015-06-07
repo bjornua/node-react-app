@@ -1,15 +1,20 @@
 "use strict";
 
-var fluxxor = require("fluxxor");
+var Marty = require("marty");
 
-module.exports = {
-    "init",
-    "setView",
-    "setURL",
-    "sidemenuHide",
-    "sidemenuShow",
-    "signin",
-    "signout",
-    "setTitle",
-    "asyncStart"
-);
+var constants = require("./constants");
+
+module.exports = Marty.createActionCreators({
+  setView: function (key, params) {
+    if (params === undefined) {
+        params = {};
+    }
+    this.dispatch(constants.setView, key, params);
+  },
+  setURL: function (url) {
+    this.dispatch(constants.setURL, url);
+  },
+  setTitle: function (newTitle) {
+    this.dispatch(constants.setTitle, newTitle);
+  }
+});

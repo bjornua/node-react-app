@@ -17,6 +17,7 @@
     "q": ">=1.1.2",
     "react": ">=0.13.0",
     "reflux": ">=0.2.3",
+    "trycatch": "^1.5.11",
     "vinyl-source-stream": ">=1.0.0",
     "watchify": ">=2.2.1"
   },

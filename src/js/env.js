@@ -4,12 +4,11 @@
 var _ = require("lodash");
 var React = require("react");
 
+var Application = require("./dispatcher");
 
 function createDispatcher(initialURL) {
-    var dispatcher = require("./dispatcher")();
-    dispatcher = dispatcher.dispatch(actions.init);
-    dispatcher = dispatcher.dispatch(actions.setURL, {url: initialURL});
-
+    var dispatcher = new Application();
+    dispatcher.action.setURL(initialURL);
     return dispatcher;
 }
 

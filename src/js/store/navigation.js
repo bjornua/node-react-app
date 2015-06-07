@@ -2,9 +2,9 @@
 
 var Marty = require("marty");
 
-var constants = Marty.createConstants(["setURL", "setView", "setTitle"]);
+var constants = require("../constants");
 
-var store = Marty.createStore({
+module.exports = Marty.createStore({
     getInitialState: function () {
         return {
             match: null,
@@ -17,7 +17,7 @@ var store = Marty.createStore({
         setTitle: constants.setTitle
     },
     resetTitle: function () {
-        this.setTitle(this.state.match.value.getInitialTitle());
+        this.setTitle(this.state.match.value.initialTitle());
     },
     setTitle: function (title) {
         this.setState({
@@ -49,7 +49,7 @@ var store = Marty.createStore({
         }
         if (wasRedirected === true || force === true) {
             this.setState({
-                title: match.value.getInitialTitle(),
+                title: match.value.initialTitle(),
                 match: match
             });
         }
