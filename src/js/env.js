@@ -3,9 +3,9 @@
 
 var _ = require("lodash");
 var React = require("react");
+var Marty = require("marty");
 
 var Application = require("./dispatcher");
-
 function createDispatcher(initialURL) {
     var dispatcher = new Application();
     dispatcher.action.setURL(initialURL);
@@ -16,43 +16,16 @@ function createElement(options) {
     var mainComponent = require("./main_component");
     var urls = require("./urls");
 
-    return React.createElement(mainComponent, {
-        urls: urls,
-        store: options.dispatcher.get,
-        onDispatch: options.onDispatch,
-        window: options.window
-    });
-}
-
-
-
-function mixin() {
-    return {
-        dispatch: function (eventname, payload) {
-            return this.props.onDispatch(eventname, payload);
-        },
-        get: function () {
-            return this.props.store(_.toArray(arguments));
-        },
-        createElement: function () {
-            var args = _.toArray(arguments);
-            args[1] = _.assign({
-                onDispatch: this.props.onDispatch,
-                store: this.props.store
-            }, args[1]);
-            return React.createElement.apply(null, args);
-        },
-        getChildHandler: function () {
-            var next = this.props.handlers.first();
-            var handlers = this.props.handlers.shift();
-            return this.createElement(next, {handlers: handlers});
-
-        }
-    };
+    return React.createElement(Marty.ApplicationContainer,
+        {app: options.app},
+        React.createElement(mainComponent, {
+            urls: urls,
+            window: options.window
+        })
+    );
 }
 
 module.exports = {
     createElement: createElement,
     createDispatcher: createDispatcher,
-    mixin: mixin
 };

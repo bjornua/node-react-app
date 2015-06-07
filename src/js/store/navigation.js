@@ -1,6 +1,7 @@
 "use strict";
 
 var Marty = require("marty");
+var urls = require("../urls");
 
 var constants = require("../constants");
 
@@ -25,7 +26,6 @@ module.exports = Marty.createStore({
         });
     },
     setURL: function (url) {
-        var urls = require("../urls");
         var match = urls.match(url);
         this.setMatch(match, true);
     },

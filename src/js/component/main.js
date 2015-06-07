@@ -1,21 +1,11 @@
-/*global require, module, window */
 "use strict";
 var React = require("react");
-var env = require("./env");
 var Immutable = require("immutable");
-var action = require("./action");
-var NavigationStore = require("./store/navigation");
+
 
 var MainComponent = React.createClass({
     displayName: "MainComponent",
-    mixins: [env.mixin()],
 
-    componentDidMount: function () {
-        window.onpopstate = function () {
-            this.dispatch(action.setURL, {url: window.document.location.pathname});
-        }.bind(this);
-
-    },
     render: function () {
         var window = this.props.window;
         if (window !== undefined) {

@@ -3,11 +3,8 @@
 
 var express = require("express");
 var React = require("react");
-var env = require("../env");
+var _ = require("lodash");
 
-function htmlEntities(str) {
-    return String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
-}
 
 function stackTraceHandler(err, req, res) {
     res.charset = "utf-8";
@@ -16,12 +13,23 @@ function stackTraceHandler(err, req, res) {
     req.socket.setNoDelay(true);
     req.socket.setKeepAlive(false);
 
-    var stack = htmlEntities(err.stack);
+    var stack = err.stack;
+    stack = _.takeWhile(stack.split("\n"), function (val) {
+        return !_.startsWith(val, "    at handleRequest (/app/src/js/server/server.js");
+    }).join("\n");
+
+    stack = _.escape(stack);
     stack = stack.replace(/^[^\/\n]*\/app\/src\/js\/.*$/gm, function (s) {
         return "<span style='color: #000;'>" + s + "</span>";
     });
+
     stack = stack.split("\n");
-    stack[0] = "<div style='color: #000; font-size: 140%; padding: 1em; background: #eee;'>" + stack[0] + "</div>";
+    var header = "";
+    header += "<div style='color: #000; font-size: 140%; padding: 1em; background: #eee;'>";
+    header += stack[0];
+    header += "</div>";
+
+    stack[0] = header;
     stack = stack.join("<br/>");
 
     var body = "";
@@ -40,16 +48,15 @@ function stackTraceHandler(err, req, res) {
     res.end(body);
 }
 
-
 function handleRequest(req, res) {
     var body;
     try {
+        var env = require("../env");
         var dispatcher = env.createDispatcher(req.url);
         var component = env.createElement({dispatcher: dispatcher});
         body = React.renderToString(component);
     } catch (err) {
-        stackTraceHandler(err, req, res);
-        return;
+        return stackTraceHandler(err, req, res);
     }
     req.socket.setNoDelay(true);
     req.socket.setKeepAlive(false);
