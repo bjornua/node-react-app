@@ -8,13 +8,13 @@ var constants = require("../constants");
 module.exports = Marty.createStore({
     getInitialState: function () {
         return {
-            match: null,
+            // match: null,
             title: null
         };
     },
     handlers: {
-        setURL: constants.setURL,
-        setView: constants.setView,
+        // setURL: constants.setURL,
+        // setView: constants.setView,
         setTitle: constants.setTitle
     },
     resetTitle: function () {
@@ -25,35 +25,35 @@ module.exports = Marty.createStore({
             title: title
         });
     },
-    setURL: function (url) {
-        var match = urls.match(url);
-        this.setMatch(match, true);
-    },
-    setView: function (key, params) {
-        var urls = require("../urls");
-        var match = urls.build(key, params || {});
-        this.setMatch(match, true);
-    },
-    setMatch: function (match, force) {
-        var urls = require("../urls");
-        var redirect;
-        var wasRedirected = false;
-        while (match.value.redirect !== undefined) {
-            redirect = match.value.redirect();
-            if (redirect !== undefined) {
-                wasRedirected = true;
-                match = urls.build(redirect.key, redirect.params);
-            } else {
-                break;
-            }
-        }
-        if (wasRedirected === true || force === true) {
-            this.setState({
-                title: match.value.initialTitle(),
-                match: match
-            });
-        }
-    }
+    // setURL: function (url) {
+    //     var match = urls.match(url);
+    //     this.setMatch(match, true);
+    // },
+    // setView: function (key, params) {
+    //     var urls = require("../urls");
+    //     var match = urls.build(key, params || {});
+    //     this.setMatch(match, true);
+    // },
+    // setMatch: function (match, force) {
+    //     var urls = require("../urls");
+    //     var redirect;
+    //     var wasRedirected = false;
+    //     while (match.value.redirect !== undefined) {
+    //         redirect = match.value.redirect();
+    //         if (redirect !== undefined) {
+    //             wasRedirected = true;
+    //             match = urls.build(redirect.key, redirect.params);
+    //         } else {
+    //             break;
+    //         }
+    //     }
+    //     if (wasRedirected === true || force === true) {
+    //         this.setState({
+    //             title: match.value.initialTitle(),
+    //             match: match
+    //         });
+    //     }
+    // }
 });
 
 /*
