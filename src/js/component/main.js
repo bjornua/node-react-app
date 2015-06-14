@@ -1,7 +1,6 @@
 "use strict";
 var React = require("react");
-var Immutable = require("immutable");
-
+var Router = require("react-router");
 
 var MainComponent = React.createClass({
     displayName: "MainComponent",
@@ -16,6 +15,7 @@ var MainComponent = React.createClass({
                 React.createElement("meta", {name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"})
             ),
             React.createElement("body", {},
+                React.createElement(Router.RouteHandler),
                 React.createElement("script", {async: true, src: "/script.js"}),
                 React.createElement("script", {async: true, src: "http://localhost:35729/livereload.js"})
             )

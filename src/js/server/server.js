@@ -8,22 +8,26 @@ var stackTraceHandler = require("./stacktracehandler");
 
 function handleRequest(req, res) {
 
-    Router.run(require("../urls"), req.path, function (Root) {
-        var body;
-        // var env = require("../env");
-        try {
-            // var dispatcher = env.createDispatcher();
-            // var component = env.createElement({dispatcher: dispatcher});
-            body = React.renderToString(React.createElement(Root));
-        } catch (err) {
-            return stackTraceHandler(err, req, res);
-        }
-        req.socket.setNoDelay(true);
-        req.socket.setKeepAlive(false);
-        res.charset = "utf-8";
-        res.header("Content-Type", "text/html");
-        res.end(body);
-    });
+    try {
+        Router.run(require("../urls"), req.path, function (Root) {
+            var body;
+            // var env = require("../env");
+                // var dispatcher = env.createDispatcher();
+                // var component = env.createElement({dispatcher: dispatcher});
+            try {
+                body = React.renderToString(React.createElement(Root));
+            } catch (err) {
+                return stackTraceHandler(err, req, res);
+            }
+            req.socket.setNoDelay(true);
+            req.socket.setKeepAlive(false);
+            res.charset = "utf-8";
+            res.header("Content-Type", "text/html");
+            res.end(body);
+        });
+    } catch (err) {
+        return stackTraceHandler(err, req, res);
+    }
 
 //     env.create(req.url).then(function (component) {
 //         var body = React.renderToString(component);

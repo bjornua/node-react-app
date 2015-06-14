@@ -2,12 +2,11 @@
 "use strict";
 
 var React = require("react");
-var urls = require("../../urls");
-var env = require("../../env");
+// var urls = require("../../urls");
 var action = require("../../action");
 
 module.exports = React.createClass({
-    mixins: [env.mixin()],
+    // mixins: [env.mixin()],
     render: function () {
         var self = this;
 
@@ -19,7 +18,8 @@ module.exports = React.createClass({
                 self.props.callback();
             };
         } else {
-            url = urls.build(self.props.dest, self.props.params).url;
+            // url = urls.build(self.props.dest, self.props.params).url;
+            url = "/";
             link = function (e) {
                 e.preventDefault();
                 self.dispatch(action.setView, {key: self.props.dest, params: self.props.params});

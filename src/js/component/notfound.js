@@ -1,15 +1,12 @@
 "use strict";
 
 var React = require("react");
-var env = require("../env");
 var navigationStore = require("../store/navigation");
 
 
 module.exports = React.createClass({
     displayName: "notfound",
-    mixins: [env.mixin()],
     statics: {
-        parent: require("../component/wrappers/page"),
         initialTitle: function () {
             return "Not found";
         }
@@ -19,8 +16,8 @@ module.exports = React.createClass({
             React.createElement("h1", {}, "Page not found"),
             React.createElement("div", {className: "dh-maxw35"},
                 React.createElement("p", {}, "The page you are looking for does not exist."),
-                React.createElement("p", {},
-                    React.createElement("strong", {}, this.get(navigationStore, "url"))
+                React.createElement("p", {}
+                    // React.createElement("strong", {}, this.get(navigationStore, "url"))
                 ),
                 React.createElement("p", {}, "This usually happens when:"),
                 React.createElement("ul", {},

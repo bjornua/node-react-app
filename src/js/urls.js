@@ -3,9 +3,24 @@ var React = require("react");
 var ReactRouter = require("react-router");
 
 var Route = ReactRouter.Route;
+var NotFoundRoute = ReactRouter.NotFoundRoute;
 
 var Routes = (
-    React.createElement(Route, {handler: require("./component/main")}
+    React.createElement(Route, {
+            handler: require("./component/main")
+        },
+        React.createElement(Route, {
+                handler: require("./component/wrappers/base")
+            },
+            React.createElement(Route, {
+                    handler: require("./component/wrappers/page")
+                },
+                React.createElement(NotFoundRoute, {
+                        handler: require("./component/notfound")
+                    }
+                )
+            )
+        )
     )
 );
 
