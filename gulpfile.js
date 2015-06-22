@@ -1,120 +1,80 @@
-/*global require */
 var gulp = require("gulp");
 var gutil = require("gulp-util");
-var browserify = require("browserify");
-var less = require("gulp-less");
-var livereload = require("gulp-livereload");
-var rename = require("gulp-rename");
-var uglify = require("gulp-uglify");
-var nodemon = require("gulp-nodemon");
-var source = require("vinyl-source-stream");
-var Q = require("q");
-var watchify = require("watchify");
+var webpack = require("webpack");
+var WebpackDevServer = require("webpack-dev-server");
+var webpackConfig = require("./webpack.config.js");
 
-var rebundle;
-var jsReloaded = Q.defer();
-gulp.task("js", function () {
-    "use strict";
-    if (rebundle === undefined) {
-        var bundler = browserify({
-            entries: ["./src/js/browser-entrypoint.js"],
-            cache: {},
-            packageCache: {},
-            fullPaths: true
-        });
-        bundler = watchify(bundler);
+// The development server (the recommended option for development)
+gulp.task("default", ["webpack-dev-server"]);
 
-        rebundle = function () {
-            var stream = bundler.bundle();
-            stream.on("error", function (err) {
-                gutil.log("Browserify Error " + err);
-                stream.end();
-            });
-            stream = stream.pipe(source("script.js"));
-            stream = stream.pipe(gulp.dest("build/"));
-            stream.on("finish", function () {
-                jsReloaded.resolve();
-                jsReloaded = Q.defer();
-            });
-            return stream;
-        };
-    }
-    rebundle();
-    return jsReloaded.promise;
+// Build and watch cycle (another option for development)
+// Advantage: No server required, can run app from filesystem
+// Disadvantage: Requests are not blocked until bundle is available,
+//               can serve an old app on refresh
+gulp.task("build-dev", ["webpack:build-dev"], function() {
+    gulp.watch(["app/**/*"], ["webpack:build-dev"]);
 });
 
-gulp.task("less", function () {
-    "use strict";
-    var stream = gulp.src("src/less/main.less");
-    stream = stream.pipe(less());
-    stream.on("error", function (err) {
-        gutil.log("Less error " + err);
+// Production build
+gulp.task("build", ["webpack:build"]);
+
+gulp.task("webpack:build", function(callback) {
+    // modify some webpack config options
+    var myConfig = Object.create(webpackConfig);
+    myConfig.plugins = myConfig.plugins.concat(
+        new webpack.DefinePlugin({
+            "process.env": {
+                // This has effect on the react lib size
+                "NODE_ENV": JSON.stringify("production")
+            }
+        }),
+        new webpack.optimize.DedupePlugin(),
+        new webpack.optimize.UglifyJsPlugin()
+    );
+
+    // run webpack
+    webpack(myConfig, function(err, stats) {
+        if(err) throw new gutil.PluginError("webpack:build", err);
+        gutil.log("[webpack:build]", stats.toString({
+            colors: true
+        }));
+        callback();
     });
-    stream = stream.pipe(rename("style.css"));
-    stream = stream.pipe(gulp.dest("build/"));
-    stream = stream.pipe(livereload());
-
 });
 
+// modify some webpack config options
+var myDevConfig = Object.create(webpackConfig);
+myDevConfig.devtool = "sourcemap";
+myDevConfig.debug = true;
 
-gulp.task("less_watch", function () {
-    "use strict";
-    gulp.watch("src/less/**/*.less", ["less"]);
+// create a single instance of the compiler to allow caching
+var devCompiler = webpack(myDevConfig);
+
+gulp.task("webpack:build-dev", function(callback) {
+    // run webpack
+    devCompiler.run(function(err, stats) {
+        if(err) throw new gutil.PluginError("webpack:build-dev", err);
+        gutil.log("[webpack:build-dev]", stats.toString({
+            colors: true
+        }));
+        callback();
+    });
 });
 
-gulp.task("images", function () {
-    "use strict";
-    gulp.src(["src/image/**/*"]).pipe(gulp.dest("build/image"));
+gulp.task("webpack-dev-server", function(callback) {
+    // modify some webpack config options
+    var myConfig = Object.create(webpackConfig);
+    myConfig.devtool = "eval";
+    myConfig.debug = true;
+
+    // Start a webpack-dev-server
+    new WebpackDevServer(webpack(myConfig), {
+        publicPath: "/" + myConfig.output.publicPath,
+        stats: {
+            colors: true
+        }
+    }).listen(8000, "localhost", function(err) {
+        if(err) throw new gutil.PluginError("webpack-dev-server", err);
+        gutil.log("[webpack-dev-server]", "http://localhost:8000/webpack-dev-server/index.html");
+    });
 });
-
-
-gulp.task("images_watch", function () {
-    "use strict";
-    gulp.watch("src/image/**/*", ["images"]);
-});
-
-
-gulp.task("server_reload", ["server"], function (cb) {
-    "use strict";
-    livereload.changed("script.js");
-    cb();
-});
-
-var server;
-var serverReloaded = Q.defer();
-gulp.task("server", ["js"], function () {
-    "use strict";
-    if (server === undefined) {
-        server = nodemon({
-            script: "src/js/server-entrypoint.js",
-            ext: "js",
-            watch: ["/dev/null"],
-            stdout: false
-        })
-            .on("crash", function () {
-                console.log(arguments);
-                serverReloaded.resolve();
-                serverReloaded = Q.defer();
-            })
-            .on("error", function () {
-                console.log(arguments);
-            })
-            .on("readable", function () {
-                this.stdout.on("data", function (data) {
-                    process.stdout.write(data);
-                    serverReloaded.resolve();
-                    serverReloaded = Q.defer();
-                });
-                this.stderr.on("data", function (data) {
-                    process.stderr.write(data);
-                });
-            });
-        gulp.watch("src/js/**/*.js", ["server_reload"]);
-    } else {
-        var promise = serverReloaded.promise;
-        server.emit("restart");
-        return promise;
-    }
-});
-
-gulp.task("default", ["less", "less_watch", "js", "images", "images_watch", "server"]);
