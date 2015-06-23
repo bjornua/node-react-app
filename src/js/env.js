@@ -12,7 +12,6 @@ function createDispatcher() {
 }
 
 function createElement(options) {
-
     return React.createElement(Marty.ApplicationContainer,
         {app: options.app},
         React.createElement(mainComponent, {
@@ -23,5 +22,5 @@ function createElement(options) {
 
 module.exports = {
     createElement: createElement,
-    createDispatcher: createDispatcher,
+    createDispatcher: createDispatcher
 };

@@ -1,8 +1,7 @@
 "use strict";
 
 var React = require("react");
-var navigationStore = require("../store/navigation");
-
+// var navigationStore = require("../store/navigation");
 
 module.exports = React.createClass({
     displayName: "notfound",
