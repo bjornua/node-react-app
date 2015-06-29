@@ -1,7 +1,8 @@
 "use strict";
 
-Error.stackTraceLimit = Infinity;
+require("babel/register");
 
+Error.stackTraceLimit = Infinity;
 
 var fs = require("fs");
 

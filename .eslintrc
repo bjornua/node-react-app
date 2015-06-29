@@ -5,5 +5,9 @@
     },
     "rules": {
       "new-cap": false
-  }
+    },
+    ecmaFeatures: {
+        "jsx": true,
+        "modules": true
+    }
 }

@@ -1,7 +1,6 @@
 /*global require, module */
-"use strict";
+import * as React from "react";
 
-var React = require("react");
 // var urls = require("../../urls");
 var action = require("../../action");
 
