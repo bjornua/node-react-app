@@ -1,8 +1,8 @@
 /*global require, module */
 import * as React from "react";
+import * as action from "../../action";
 
 // var urls = require("../../urls");
-var action = require("../../action");
 
 module.exports = React.createClass({
     // mixins: [env.mixin()],

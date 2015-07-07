@@ -1,4 +1,5 @@
 "use strict";
+var path = require("path");
 
 module.exports = {
     context: __dirname + "/src/js/",
@@ -9,11 +10,13 @@ module.exports = {
         path: __dirname + "/build/",
         filename: "script.js"
     },
-    modules: {
+    resolveLoader: { root: path.join(__dirname, "node_modules") },
+    module: {
         loaders: [
             {
-                // test: /\.jsx$/,
-                loader: "babel-loader"
+                test: /\.js$/,
+                exclude: /(node_modules|bower_components)/,
+                loader: "babel"
             }
         ]
     }
