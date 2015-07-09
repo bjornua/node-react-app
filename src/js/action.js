@@ -1,10 +1,10 @@
 "use strict";
 
-var Marty = require("marty");
+import {createActionCreators} from "marty";
+import * as constants from "./constants";
 
-var constants = require("./constants");
 
-module.exports = Marty.createActionCreators({
+module.exports = createActionCreators({
   setView: function (key, params) {
     if (params === undefined) {
         params = {};

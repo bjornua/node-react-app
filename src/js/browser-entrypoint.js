@@ -1,6 +1,9 @@
 "use strict";
 
-var React = require("react");
+import * as React from "react";
+import * as routes from "./urls";
+import * as Router from "react-router";
+
 // var env = require("./env");
 
 // var asyncSpawner = require("./store/async").spawner;
@@ -27,8 +30,6 @@ var React = require("react");
 // };
 
 // update();
-var routes = require("./urls");
-var Router = require("react-router");
 
 Router.run(routes, Router.HistoryLocation, function (root) {
     React.render(

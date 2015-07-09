@@ -20,22 +20,22 @@ var base = React.createClass({
         var baseClasses = classnames("dh-base", {
             "dh-sidemenu-open": true // this.get(sidemenuStore, "show")
         });
-        return React.createElement("div", {className: baseClasses},
-            React.createElement("div", {className: "dh-header"},
-                React.createElement("div", {className: "dh-homemenu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed"},
-                    React.createElement(Link,
-                        {dest: "404", params: {path: "/"}, className: "dh-logo"},
-                        React.createElement("img", {src: "/image/logo.png"})
-                    ),
-                    React.createElement(Topmenu)
-                )
-            ),
-            React.createElement("div", {className: "dh-content"},
-                React.createElement(Messages),
-                React.createElement(Router.RouteHandler),
-                React.createElement(Sidemenu)
-            )
-        );
+
+        return <div className={baseClasses}>
+            <div className="dh-header">
+                <div className="dh-homemenu pure-menu pure-menu-open pure-menu-horizontal pure-menu-fixed">
+                    <Link dest="404" params={{path: "/"}} className="dh-logo">
+                        <img src="/image/logo.png" />
+                    </Link>
+                    <Topmenu />
+                </div>
+            </div>
+            <div className="dh-content">
+                <Messages />
+                <Router.RouteHandler />
+                <Sidemenu />
+            </div>
+        </div>;
     }
 });
 

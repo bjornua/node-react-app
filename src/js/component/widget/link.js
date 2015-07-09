@@ -4,7 +4,7 @@ import * as action from "../../action";
 
 // var urls = require("../../urls");
 
-module.exports = React.createClass({
+var Link = React.createClass({
     // mixins: [env.mixin()],
     render: function () {
         var self = this;
@@ -24,11 +24,11 @@ module.exports = React.createClass({
                 self.dispatch(action.setView, {key: self.props.dest, params: self.props.params});
             };
         }
-        return (
-            React.createElement("a", {href: url, onClick: link, className: this.props.className},
-                this.props.children
-            )
-        );
+        return <a href={url} onClick={link} className={this.props.className}>
+            {this.props.children}
+        </a>;
 
     }
 });
+
+module.exports = Link;

@@ -4,8 +4,14 @@
       "node": true
     },
     "rules": {
-      "new-cap": false
+      "new-cap": false,
+      "react/jsx-uses-vars": true
     },
+    "parser": "babel-eslint",
+  "plugins": [
+      "eslint-plugin-react"
+  ]
+
     ecmaFeatures: {
         "jsx": true,
         "modules": true
