@@ -1,17 +1,16 @@
 {
     "env": {
-      "browser": true,
-      "node": true
+        "browser": true,
+        "node": true
     },
     "rules": {
-      "new-cap": false,
-      "react/jsx-uses-vars": true
+        "new-cap": false,
+        "react/jsx-uses-vars": true
     },
     "parser": "babel-eslint",
-  "plugins": [
-      "eslint-plugin-react"
-  ]
-
+    "plugins": [
+        "eslint-plugin-react"
+    ],
     ecmaFeatures: {
         "jsx": true,
         "modules": true
