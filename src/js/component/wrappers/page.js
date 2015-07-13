@@ -1,15 +1,12 @@
 "use strict";
 
-import {createClass} from "react";
+import React from "react";
 import {RouteHandler} from "react-router";
 
-var page = createClass({
-    displayName: "page",
-    render: function () {
+export default class Page extends React.Component {
+    render() {
         return <div className="dh-mainpage">
             <RouteHandler/>
         </div>;
     }
-});
-
-module.exports = page;
+}

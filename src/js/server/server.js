@@ -1,19 +1,18 @@
 /*global require, module, process */
 "use strict";
 
-var express = require("express");
-var Router = require("react-router");
-var React = require("react");
-var stackTraceHandler = require("./stacktracehandler");
+import express from "express";
+import Router from "react-router";
+import * as React from "react";
+import stackTraceHandler from "./stacktracehandler";
+
+const encoding = "utf-8";
 
 function handleRequest(req, res) {
 
     try {
         Router.run(require("../urls"), req.path, function (Root) {
-            var body;
-            // var env = require("../env");
-                // var dispatcher = env.createDispatcher();
-                // var component = env.createElement({dispatcher: dispatcher});
+            let body;
             try {
                 body = React.renderToString(React.createElement(Root));
             } catch (err) {
@@ -21,7 +20,7 @@ function handleRequest(req, res) {
             }
             req.socket.setNoDelay(true);
             req.socket.setKeepAlive(false);
-            res.charset = "utf-8";
+            res.charset = encoding;
             res.header("Content-Type", "text/html");
             res.end(body);
         });
@@ -38,11 +37,8 @@ function handleRequest(req, res) {
 //     });
 }
 
-function createApp() {
-    var app = express();
+export function createApp() {
+    const app = express();
     app.get("*", handleRequest);
     return app;
 }
-module.exports = {
-    createApp: createApp
-};

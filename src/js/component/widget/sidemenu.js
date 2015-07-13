@@ -1,14 +1,14 @@
 "use strict";
 
-var React = require("react");
-var Link = require("./link");
-var MenuStore = require("../../store/menu");
-var Immutable = require("immutable");
+import React from "react";
+// import Link from "./link";
+// import MenuStore from "../../store/menu";
+import Immutable from "immutable";
 
-module.exports = React.createClass({
+export default class SideMenu extends React.Component {
     // mixins: [env.mixin()],
-    render: function () {
-        var self = this;
+    render() {
+        // const self = this;
 
         // var menu = this.get(MenuStore);
         // menu = menu.unshift(Immutable.Map({
@@ -36,8 +36,8 @@ module.exports = React.createClass({
         // }, this);
 
         var menu = Immutable.Map();
-        return React.createElement("ul", {className: "dh-sidemenu"},
-            menu.toJS()
-        );
+        return <ul className="dh-sidemenu">
+            {menu.toJS()}
+        </ul>;
     }
-});
+}

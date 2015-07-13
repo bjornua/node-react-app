@@ -1,16 +1,16 @@
 "use strict";
 
-var _ = require("lodash");
+import _ from "lodash";
 
 
-var stackTraceHandler = function (err, req, res) {
+export default function stackTraceHandler (err, req, res) {
     res.charset = "utf-8";
     res.header("Content-Type", "text/html");
     res.status(500);
     req.socket.setNoDelay(true);
     req.socket.setKeepAlive(false);
 
-    var stack = err.stack;
+    let stack = err.stack;
     stack = _.takeWhile(stack.split("\n"), function (val) {
         return !_.startsWith(val, "    at handleRequest (/app/src/js/server/server.js");
     }).join("\n");
@@ -21,7 +21,7 @@ var stackTraceHandler = function (err, req, res) {
     });
 
     stack = stack.split("\n");
-    var header = "";
+    let header = "";
     header += "<div style='color: #000; font-size: 140%; padding: 1em; background: #eee;'>";
     header += stack[0];
     header += "</div>";
@@ -29,7 +29,7 @@ var stackTraceHandler = function (err, req, res) {
     stack[0] = header;
     stack = stack.join("<br/>");
 
-    var body = "";
+    let body = "";
     body += "<!doctype html>\n";
     body += "<html>\n";
     body += "<head>\n";
@@ -43,7 +43,4 @@ var stackTraceHandler = function (err, req, res) {
     body += "</html>";
 
     res.end(body);
-};
-
-
-module.exports = stackTraceHandler;
+}

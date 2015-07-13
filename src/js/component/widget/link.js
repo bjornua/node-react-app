@@ -1,15 +1,18 @@
 /*global require, module */
-import * as React from "react";
-import * as action from "../../action";
+import React from "react";
+import action from "../../action";
 
-// var urls = require("../../urls");
 
-var Link = React.createClass({
-    // mixins: [env.mixin()],
-    render: function () {
-        var self = this;
+export default class Link extends React.Component {
+    constructor(props) {
+        super(props);
+    }
 
-        var link, url;
+    render () {
+        const self = this;
+
+        let link, url;
+
         if (self.props.callback !== undefined) {
             url = "";
             link = function (e) {
@@ -27,8 +30,6 @@ var Link = React.createClass({
         return <a href={url} onClick={link} className={this.props.className}>
             {this.props.children}
         </a>;
-
     }
-});
+}
 
-module.exports = Link;

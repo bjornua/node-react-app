@@ -1,31 +1,31 @@
 "use strict";
 
-var React = require("react");
+import React from "react";
 // var navigationStore = require("../store/navigation");
 
-module.exports = React.createClass({
-    displayName: "notfound",
-    statics: {
-        initialTitle: function () {
-            return "Not found";
-        }
-    },
-    render: function () {
-        return React.createElement("div", {},
-            React.createElement("h1", {}, "Page not found"),
-            React.createElement("div", {className: "dh-maxw35"},
-                React.createElement("p", {}, "The page you are looking for does not exist."),
-                React.createElement("p", {}
-                    // React.createElement("strong", {}, this.get(navigationStore, "url"))
-                ),
-                React.createElement("p", {}, "This usually happens when:"),
-                React.createElement("ul", {},
-                    React.createElement("li", {}, "The page has been removed at some point."),
-                    React.createElement("li", {}, "The link you clicked was mistyped."),
-                    React.createElement("li", {}, "You mistyped the address.")
-                ),
-                React.createElement("p", {}, "We are sorry about the inconvenience.")
-            )
-        );
+export default class NotFound extends React.Component {
+    static initialTitle() {
+        return "Not found";
     }
-});
+
+    render() {
+        return <div>
+            <h1>Page not found</h1>
+            <div className="dh-maxw35">
+                <p>The page you are looking for does not exist</p>
+                <p>
+                    {
+                        //<strong>{this.get(navigationStore, "url")}</strong>}
+                    }
+                </p>
+                <p>This usually happens when:</p>
+                <ul>
+                    <li>The page has been removed at some point.</li>
+                    <li>The link you clicked was mistyped.</li>
+                    <li>You mistyped the address.</li>
+                </ul>
+                <p>We are sorry about the inconvenience.</p>
+            </div>
+        </div>;
+    }
+}

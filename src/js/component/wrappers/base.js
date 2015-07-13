@@ -2,22 +2,22 @@
 /*jslint sloppy: true */
 "use strict";
 
-var React = require("react");
-// var sidemenuStore = require("../../store/sidemenu");
-var classnames = require("classnames");
+import React from "react";
+import classnames from "classnames";
 
-var Link = require("../widget/link");
-var Topmenu = require("../widget/topmenu");
-var Sidemenu = require("../widget/sidemenu");
-var Messages = require("../widget/messages");
-// var SidemenuStore = require("../../store/sidemenu");
-var Router = require("react-router");
+import Link from "../widget/link";
+import Topmenu from "../widget/topmenu";
+import Sidemenu from "../widget/sidemenu";
+import Messages from "../widget/messages";
+import Router from "react-router";
 
 
-var base = React.createClass({
-    displayName: "base",
-    render: function () {
-        var baseClasses = classnames("dh-base", {
+export default class Base extends React.Component {
+     constructor(props) {
+        super(props);
+    }
+   render() {
+        const baseClasses = classnames("dh-base", {
             "dh-sidemenu-open": true // this.get(sidemenuStore, "show")
         });
 
@@ -37,6 +37,4 @@ var base = React.createClass({
             </div>
         </div>;
     }
-});
-
-module.exports = base;
+}

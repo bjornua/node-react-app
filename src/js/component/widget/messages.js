@@ -1,19 +1,17 @@
 
 "use strict";
 
-var React = require("react");
-var classnames = require("classnames");
-var MsgStore = require("../../store/messages");
-var _ = require("lodash");
+import React from "react";
+import classnames from "classnames";
+import MsgStore from "../../store/messages";
+import _ from "lodash";
 
-module.exports = React.createClass({
-    // mixins: [env.mixin()],
-
-    componentWillMount: function () {
+export default class Messages extends React.Component {
+    componentWillMount() {
         this.setState({
             hide: true
         });
-    },
+    }
     // componentDidMount: function () {
     //     var self = this;
     //     self.nextMessage = function () {
@@ -32,14 +30,14 @@ module.exports = React.createClass({
     //     self.nextMessage();
     //     self.addStoreListener(MsgStore, self.nextMessage);
     // },
-    componentWillUnmount: function () {
+    componentWillUnmount() {
         window.clearTimeout(this.timer_hide);
         window.clearTimeout(this.timer_hidden);
         this.removeStoreListener(MsgStore, this.nextMessage);
-    },
-    render: function () {
-        var current = {};// = this.store(MsgStore).current;
-        var self = this;
+    }
+    render () {
+        const current = {};// = this.store(MsgStore).current;
+        const self = this;
         var msg = function (classname) {
             var classes = classnames(
                 "dh-messages", {
@@ -63,6 +61,6 @@ module.exports = React.createClass({
                 return msg("exit", React.createElement("strong", {}, "Signed out"));
             }
         }
-        return React.createElement("div", {key: 0, className: "dh-messages dh-messages-hidden"});
+        return <div key="0" className="dh-messages dh-messages-hidden"/>;
     }
-});
+}

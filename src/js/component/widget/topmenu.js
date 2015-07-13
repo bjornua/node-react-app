@@ -1,14 +1,13 @@
 "use strict";
 
-var React = require("react");
-var Link = require("./link");
-var MenuStore = require("../../store/menu");
-var action = require("../../action");
+import React from "react";
+import Link from "./link";
+// var MenuStore = require("../../store/menu");
+import action from "../../action";
 
-module.exports = React.createClass({
-    // mixins: [env.mixin()],
-    render: function () {
-        var self = this;
+export default class Topmenu extends React.Component {
+    render() {
+        const self = this;
 
 
         // var menu = this.get(MenuStore).map(function (item, key) {
@@ -20,13 +19,12 @@ module.exports = React.createClass({
         //         this.createElement(link, {dest: item.get("dest")}, item.get("title"))
         //     );
         // }, this);
-        return React.createElement("ul", {},
-            // menu.toJS(),
-            React.createElement("li", {className: "dh-menu-icon"},
-                React.createElement(Link, {callback: function () { self.dispatch(action.sidemenuShow); }},
-                    React.createElement("img", {src: "/image/menu.png"})
-                )
-            )
-        );
+        return <ul>
+            <li className="dh-menu-icon">,
+                <Link callback={function () { self.dispatch(action.sidemenuShow); }}>
+                    <img src="/image/menu.png" />
+                </Link>
+            </li>
+        </ul>;
     }
-});
+}
