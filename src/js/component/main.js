@@ -1,13 +1,12 @@
 "use strict";
-import * as React from "react";
-import * as Router from "react-router";
+import React from "react";
+import Router from "react-router";
 
 var MainComponent = React.createClass({
     displayName: "MainComponent",
 
     render: function () {
         var title = "Untitled";
-
 
         return <html>
             <head>
