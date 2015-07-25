@@ -1,11 +1,46 @@
 /*global require, module */
-var React = require("react");
-var ReactRouter = require("react-router");
 
-var Route = ReactRouter.Route;
-var NotFoundRoute = ReactRouter.NotFoundRoute;
 
-var Routes = (
+
+
+import Views from "./component/views";
+const views = {};
+for (let view of Views) {
+    views[view.handles] = {path: view.path, component: view.default};
+}
+Object.freeze(views);
+
+const routes = {};
+for (let name in views) {
+    console.assert(views[name].path !== undefined);
+    routes[name] = views[name];
+}
+Object.freeze(routes);
+
+import Router from "routr";
+const router = new Router(routes);
+
+
+export function makePath (component, params) {
+    return router.makePath(component.handles, params);
+}
+
+export function getRoute (url) {
+    const route = router.getRoute(url);
+
+    if (route === null) {
+        return views.notfound;
+    }
+
+    return {
+        component: views[route.name],
+        params: route.params
+    };
+}
+
+
+
+/*var Routes = (
     React.createElement(Route, {
             handler: require("./component/main")
         },
@@ -24,7 +59,7 @@ var Routes = (
     )
 );
 
-module.exports = Routes;
+module.exports = Routes;*/
 /*
 r.add("/timer/", "timer", require("./component/timer"));
 r.add("/user/signin/", "user_signin", require("./component/signin"));

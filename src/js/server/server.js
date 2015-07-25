@@ -2,28 +2,28 @@
 "use strict";
 
 import express from "express";
-import Router from "react-router";
 import * as React from "react";
 import stackTraceHandler from "./stacktracehandler";
+
 
 const encoding = "utf-8";
 
 function handleRequest(req, res) {
-
     try {
-        Router.run(require("../urls"), req.path, function (Root) {
-            let body;
-            try {
-                body = React.renderToString(React.createElement(Root));
-            } catch (err) {
-                return stackTraceHandler(err, req, res);
-            }
-            req.socket.setNoDelay(true);
-            req.socket.setKeepAlive(false);
-            res.charset = encoding;
-            res.header("Content-Type", "text/html");
-            res.end(body);
-        });
+        var Handler = require("../main");
+        let body;
+        try {
+            body = React.renderToString(<Handler url={req.path}/>);
+            console.log(body);
+        } catch (err) {
+            return stackTraceHandler(err, req, res);
+        }
+        req.socket.setNoDelay(true);
+        req.socket.setKeepAlive(false);
+        res.charset = encoding;
+        res.header("Content-Type", "text/html");
+        res.end(body);
+
     } catch (err) {
         return stackTraceHandler(err, req, res);
     }
