@@ -4,18 +4,21 @@
 
 
 import Views from "./component/views";
+
 const views = {};
 for (let view of Views) {
-    views[view.handles] = {path: view.path, component: view.default};
+    views[view.name] = {path: view.path, method: "get", component: view.component};
 }
 Object.freeze(views);
 
+
 const routes = {};
-for (let name in views) {
-    console.assert(views[name].path !== undefined);
-    routes[name] = views[name];
+for (let view in views) {
+    if (view !== "notfound") {
+        console.assert(views[view].path !== undefined);
+        routes[view] = views[view];
+    }
 }
-Object.freeze(routes);
 
 import Router from "routr";
 const router = new Router(routes);
@@ -26,14 +29,20 @@ export function makePath (component, params) {
 }
 
 export function getRoute (url) {
+    console.log(url);
     const route = router.getRoute(url);
 
+    console.log(route);
+
     if (route === null) {
-        return views.notfound;
+        return {
+            component: views.notfound.component,
+            params: {}
+        };
     }
 
     return {
-        component: views[route.name],
+        component: route.config.component,
         params: route.params
     };
 }

@@ -1,7 +1,9 @@
-import * as NotFound from "./notfound";
+import NotFound from "./notfound";
+import Landing from "./landing";
 
 const routes = [
-    NotFound
+    NotFound,
+    Landing
 ];
 
 export default routes;

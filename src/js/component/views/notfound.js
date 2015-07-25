@@ -3,15 +3,7 @@
 import React from "react";
 import Page from "./wrappers/page";
 
-export const handles = "notfound";
-export const path = "/";
-
-
-export default class View extends React.Component {
-    static initialTitle() {
-        return "Not found";
-    }
-
+class NotFound extends React.Component {
     render() {
         return <Page title="Not Found">
             <div>
@@ -35,3 +27,11 @@ export default class View extends React.Component {
         </Page>;
     }
 }
+
+const View = Object.freeze({
+    "name": "notfound",
+    "path": undefined,
+    "component": NotFound
+});
+
+export default View;
