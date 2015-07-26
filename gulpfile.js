@@ -43,7 +43,7 @@ var Q = require("q");
 //     return jsReloaded.promise;
 // });
 
-
+/*
 var webpackConfig = require("./webpack.config.js");
 var webpack = require("webpack");
 var myDevConfig = Object.create(webpackConfig);
@@ -64,7 +64,7 @@ gulp.task("js", function (callback) {
         callback();
     });
 });
-
+*/
 
 
 gulp.task("less", function () {
@@ -106,7 +106,7 @@ gulp.task("server_reload", ["server"], function (cb) {
 
 var server;
 var serverReloaded = Q.defer();
-gulp.task("server", ["js"], function () {
+gulp.task("server", [], function () {
     "use strict";
     if (server === undefined) {
         server = nodemon({
@@ -141,4 +141,4 @@ gulp.task("server", ["js"], function () {
     }
 });
 
-gulp.task("default", ["less", "less_watch", "js", "images", "images_watch", "server"]);
+gulp.task("default", ["less", "less_watch", "images", "images_watch", "server"]);

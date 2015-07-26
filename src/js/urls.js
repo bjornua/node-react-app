@@ -29,10 +29,7 @@ export function makePath (component, params) {
 }
 
 export function getRoute (url) {
-    console.log(url);
     const route = router.getRoute(url);
-
-    console.log(route);
 
     if (route === null) {
         return {

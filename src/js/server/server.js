@@ -14,7 +14,6 @@ function handleRequest(req, res) {
         let body;
         try {
             body = React.renderToString(<Handler url={req.path}/>);
-            console.log(body);
         } catch (err) {
             return stackTraceHandler(err, req, res);
         }
