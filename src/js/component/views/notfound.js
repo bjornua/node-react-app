@@ -28,10 +28,4 @@ class NotFound extends React.Component {
     }
 }
 
-const View = Object.freeze({
-    "name": "notfound",
-    "path": undefined,
-    "component": NotFound
-});
-
-export default View;
+export default NotFound;

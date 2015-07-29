@@ -5,9 +5,10 @@
 
 import Views from "./component/views";
 
+
 const views = {};
 for (let view of Views) {
-    views[view.name] = {path: view.path, method: "get", component: view.component};
+    views[view[0]] = {path: view[1], method: "get", component: view[2]};
 }
 Object.freeze(views);
 
