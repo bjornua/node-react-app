@@ -1,12 +1,13 @@
 "use strict";
 
 import * as React from "react";
-import * as routes from "./urls";
-import * as Router from "react-router";
+import Handler from "./main";
 
-Router.run(routes, Router.HistoryLocation, function (Root) {
+function render() {
     React.render(
-        React.createElement(Root),
+        <Handler url={window.location.pathname} />,
         window.document
     );
-});
+}
+
+render();

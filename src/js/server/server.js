@@ -5,6 +5,8 @@ import express from "express";
 import * as React from "react";
 import stackTraceHandler from "./stacktracehandler";
 
+import webpackMiddleware from "webpack-dev-middleware";
+import webpack from "webpack";
 
 const encoding = "utf-8";
 
@@ -22,7 +24,6 @@ function handleRequest(req, res) {
         res.charset = encoding;
         res.header("Content-Type", "text/html");
         res.end(body);
-
     } catch (err) {
         return stackTraceHandler(err, req, res);
     }

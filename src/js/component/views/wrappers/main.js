@@ -12,8 +12,7 @@ export default class Main extends React.Component {
             <body>
                 {this.props.children}
                 <script async={true} src="/script.js" />
-                <script async={true} src="http://localhost:35729/livereload.js"/>
             </body>
         </html>;
     }
-};
+}

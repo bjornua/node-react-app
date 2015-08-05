@@ -10,8 +10,6 @@ import Link from "../../widget/link";
 import Topmenu from "../../widget/topmenu";
 import Sidemenu from "../../widget/sidemenu";
 import Messages from "../../widget/messages";
-import Router from "react-router";
-
 
 export default class Base extends React.Component {
      constructor(props) {

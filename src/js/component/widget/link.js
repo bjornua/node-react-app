@@ -1,7 +1,7 @@
 /*global require, module */
 import React from "react";
 import action from "../../action";
-
+import {makePath} from "../../urls";
 
 export default class Link extends React.Component {
     constructor(props) {
@@ -10,6 +10,7 @@ export default class Link extends React.Component {
 
     render () {
         const self = this;
+
 
         let link, url;
 
@@ -20,13 +21,12 @@ export default class Link extends React.Component {
                 self.props.callback();
             };
         } else {
-            // url = urls.build(self.props.dest, self.props.params).url;
-            url = "/";
+            url = makePath(self.props.dest, self.props.params);
             link = function (e) {
                 e.preventDefault();
-                self.dispatch(action.setView, {key: self.props.dest, params: self.props.params});
             };
         }
+
         return <a href={url} onClick={link} className={this.props.className}>
             {this.props.children}
         </a>;

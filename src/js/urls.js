@@ -25,8 +25,8 @@ import Router from "routr";
 const router = new Router(routes);
 
 
-export function makePath (component, params) {
-    return router.makePath(component.handles, params);
+export function makePath (view, params) {
+    return router.makePath(view, params);
 }
 
 export function getRoute (url) {
