@@ -4,8 +4,11 @@ import React from "react";
 import Page from "./wrappers/page";
 
 class NotFound extends React.Component {
+    static title(props) {
+        return "Not found";
+    }
     render() {
-        return <Page title="Not Found">
+        return <Page>
             <div>
                 <h1>Page not found</h1>
                 <div className="dh-maxw35">

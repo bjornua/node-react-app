@@ -1,26 +1,29 @@
-/*global module, require, console */
 "use strict";
 
-var _ = require("lodash");
-var React = require("react");
-var Marty = require("marty");
+import React from "react";
+import Marty from "marty";
+import Handler from "./main";
 
-var Application = require("./dispatcher");
-function createDispatcher() {
-    var dispatcher = new Application();
-    return dispatcher;
+import actions from "./action";
+
+class Application extends Marty.Application {
+    constructor(options) {
+        super(options);
+        this.register("action", actions);
+
+        this.dispatcher.register(function (action) {
+          console.log(action.type, action.arguments);
+        });
+        this.register("navigationStore", require("./store/navigation"));
+    }
 }
 
-function createElement(options) {
-    return React.createElement(Marty.ApplicationContainer,
-        {app: options.app},
-        React.createElement(mainComponent, {
-            window: options.window
-        })
-    );
-}
 
-module.exports = {
-    createElement: createElement,
-    createDispatcher: createDispatcher
-};
+export function getApp (url) {
+    const app = new Application();
+
+    return<Marty.ApplicationContainer app={app}>
+            <Handler />
+        </Marty.ApplicationContainer>;
+
+}

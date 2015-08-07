@@ -1,7 +1,3 @@
-"use strict";
-
-require("babel/register");
-
 Error.stackTraceLimit = Infinity;
 
 var fs = require("fs");
@@ -15,8 +11,6 @@ function beginServer() {
     var app = server.createApp();
     fs.unlink(socketpath, _.noop);
     var appserver = app.listen(socketpath, function () {
-        // This actually helps trigger livereload at the right moment
-        // (see gulpfile.js)
         console.log("Listening on " + socketpath);
     });
     appserver.setTimeout(200);

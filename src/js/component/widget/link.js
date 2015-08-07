@@ -2,15 +2,15 @@
 import React from "react";
 import action from "../../action";
 import {makePath} from "../../urls";
+import {createContainer} from "marty";
 
-export default class Link extends React.Component {
+class LinkComponent extends React.Component {
     constructor(props) {
         super(props);
     }
 
     render () {
         const self = this;
-
 
         let link, url;
 
@@ -22,14 +22,17 @@ export default class Link extends React.Component {
             };
         } else {
             url = makePath(self.props.dest, self.props.params);
-            link = function (e) {
+            link = (e) => {
                 e.preventDefault();
+                this.app.action.setURL(url);
             };
         }
-
         return <a href={url} onClick={link} className={this.props.className}>
             {this.props.children}
         </a>;
     }
 }
 
+const Link = createContainer(LinkComponent);
+
+export default Link;

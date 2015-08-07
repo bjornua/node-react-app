@@ -12,10 +12,10 @@ const encoding = "utf-8";
 
 function handleRequest(req, res) {
     try {
-        var Handler = require("../main");
+        const {getApp} = require("../env");
         let body;
         try {
-            body = React.renderToString(<Handler url={req.path}/>);
+            body = React.renderToString(getApp(req.path));
         } catch (err) {
             return stackTraceHandler(err, req, res);
         }

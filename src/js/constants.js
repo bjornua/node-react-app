@@ -1,9 +1,9 @@
 "use strict";
+import Marty from "marty";
 
-var Marty = require("marty");
-
-module.exports = Marty.createConstants([
+const constants = Marty.createConstants([
     "setURL",
-    "setView",
-    "setTitle"
+    "setView"
 ]);
+
+export default constants;

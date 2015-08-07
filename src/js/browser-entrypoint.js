@@ -1,11 +1,11 @@
 "use strict";
 
-import * as React from "react";
-import Handler from "./main";
+import React from "react";
+import {getApp} from "./env";
 
 function render() {
     React.render(
-        <Handler url={window.location.pathname} />,
+        getApp(window.location.pathname),
         window.document
     );
 }

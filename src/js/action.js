@@ -1,20 +1,13 @@
 "use strict";
 
 import {createActionCreators} from "marty";
-import * as constants from "./constants";
+import constants from "./constants";
 
 
-module.exports = createActionCreators({
-  setView: function (key, params) {
-    if (params === undefined) {
-        params = {};
+const actions = createActionCreators({
+    setURL: function (url) {
+        this.dispatch(constants.setURL, url);
     }
-    this.dispatch(constants.setView, key, params);
-  },
-  setURL: function (url) {
-    this.dispatch(constants.setURL, url);
-  },
-  setTitle: function (newTitle) {
-    this.dispatch(constants.setTitle, newTitle);
-  }
 });
+
+export default actions;

@@ -30,11 +30,11 @@ export default class Messages extends React.Component {
     //     self.nextMessage();
     //     self.addStoreListener(MsgStore, self.nextMessage);
     // },
-    componentWillUnmount() {
-        window.clearTimeout(this.timer_hide);
-        window.clearTimeout(this.timer_hidden);
-        this.removeStoreListener(MsgStore, this.nextMessage);
-    }
+    // componentWillUnmount() {
+    //     window.clearTimeout(this.timer_hide);
+    //     window.clearTimeout(this.timer_hidden);
+    //     this.removeStoreListener(MsgStore, this.nextMessage);
+    // }
     render () {
         const current = {};// = this.store(MsgStore).current;
         const self = this;

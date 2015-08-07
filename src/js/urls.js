@@ -26,7 +26,9 @@ const router = new Router(routes);
 
 
 export function makePath (view, params) {
-    return router.makePath(view, params);
+    var path = router.makePath(view, params);
+    console.log(path);
+    return path;
 }
 
 export function getRoute (url) {
