@@ -1,5 +1,9 @@
 # /app/package.json
+nginx -c /app/nginx.conf &
+
+export DEVELOPMENT=true
+
 su user -c "npm install" &&
-nginx -c /app/nginx.conf &&
-su user -c "./node_modules/.bin/nodemon" &
-su user -c "DEVELOPMENT=true ./node_modules/.bin/webpack --watch"
+su user -c "./node_modules/.bin/webpack" &&
+su user -c "./node_modules/.bin/forever --minUptime=1000 --spinSleepTime=10000 --colors=true forever/development.json" &
+su user -c "./node_modules/.bin/webpack --watch"

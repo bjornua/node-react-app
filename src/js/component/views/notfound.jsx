@@ -1,7 +1,7 @@
 "use strict";
 
 import React from "react";
-import Page from "./wrappers/page";
+import Page from "../wrappers/page";
 
 class NotFound extends React.Component {
     static title(props) {

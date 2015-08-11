@@ -1,10 +1,11 @@
 /*global require, module */
 import React from "react";
-import action from "../../action";
+import * as actions from "../../action";
 import {makePath} from "../../urls";
-import {createContainer} from "marty";
+import { connect } from "react-redux";
 
-class LinkComponent extends React.Component {
+
+class Link extends React.Component {
     constructor(props) {
         super(props);
     }
@@ -24,7 +25,7 @@ class LinkComponent extends React.Component {
             url = makePath(self.props.dest, self.props.params);
             link = (e) => {
                 e.preventDefault();
-                this.app.action.setURL(url);
+                this.props.dispatch(actions.setURL(url));
             };
         }
         return <a href={url} onClick={link} className={this.props.className}>
@@ -33,6 +34,9 @@ class LinkComponent extends React.Component {
     }
 }
 
-const Link = createContainer(LinkComponent);
 
-export default Link;
+export default connect(
+    function(state) { 
+        return {};
+    }
+)(Link);

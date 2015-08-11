@@ -1,13 +1,9 @@
 "use strict";
 
-import {createActionCreators} from "marty";
-import constants from "./constants";
+export function setURL (url) {
+    return {
+        type: 'SET_URL',
+        url: url
+    };
+}
 
-
-const actions = createActionCreators({
-    setURL: function (url) {
-        this.dispatch(constants.setURL, url);
-    }
-});
-
-export default actions;

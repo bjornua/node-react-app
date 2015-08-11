@@ -1,6 +1,6 @@
 from base/archlinux:latest
 
-RUN pacman -Syu --noconfirm nodejs nginx
+RUN pacman -Sy --noconfirm npm nodejs nginx
 
 RUN \
     useradd user -m -d /home/user

@@ -16,7 +16,7 @@ export default function stackTraceHandler (err, req, res) {
     }).join("\n");
 
     stack = _.escape(stack);
-    stack = stack.replace(/^[^\/\n]*\/app\/src\/js\/.*$/gm, function (s) {
+    stack = stack.replace(/^[^\/\n]*\/app\/build\/backend\/webpack:.*$/gm, function (s) {
         return "<span style='color: #000;'>" + s + "</span>";
     });
 

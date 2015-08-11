@@ -4,10 +4,6 @@
 import express from "express";
 import * as React from "react";
 import stackTraceHandler from "./stacktracehandler";
-
-import webpackMiddleware from "webpack-dev-middleware";
-import webpack from "webpack";
-
 const encoding = "utf-8";
 
 function handleRequest(req, res) {

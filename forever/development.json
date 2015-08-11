@@ -1,0 +1,10 @@
+[
+    {
+        "uid": "app",
+        "append": true,
+        "watch": true,
+        "script": "./build/backend/script.js",
+        "sourceDir": ".",
+        "watchDirectory": "./build/backend/"
+    }
+]

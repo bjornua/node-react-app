@@ -1,7 +1,3 @@
-/*global require, module */
-
-
-
 
 import Views from "./component/views";
 
@@ -27,7 +23,6 @@ const router = new Router(routes);
 
 export function makePath (view, params) {
     var path = router.makePath(view, params);
-    console.log(path);
     return path;
 }
 
