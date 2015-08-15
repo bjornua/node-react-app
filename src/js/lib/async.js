@@ -29,7 +29,9 @@ request = {
     }
 }
 
-
+const initialState = Immutable.fromJS({
+    queued: []
+});
 function reducer (state={}, action) {
 
     switch (action.type) {
