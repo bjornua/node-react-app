@@ -31,13 +31,13 @@ export function getRoute (url) {
 
     if (route === null) {
         return {
-            component: views.notfound.component,
+            Component: views.notfound.component,
             params: {}
         };
     }
 
     return {
-        component: route.config.component,
+        Component: route.config.component,
         params: route.params
     };
 }

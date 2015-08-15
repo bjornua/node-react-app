@@ -10,9 +10,6 @@ import Link from "../widget/link";
 const LogoURL = require("../../../image/logo.png");
 
 export default class Base extends React.Component {
-     constructor(props) {
-        super(props);
-    }
     render() {
         return <div>
             <Link dest="landing" className="dh-logo">

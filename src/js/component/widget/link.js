@@ -6,10 +6,6 @@ import { connect } from "react-redux";
 
 
 class Link extends React.Component {
-    constructor(props) {
-        super(props);
-    }
-
     render () {
         const self = this;
 

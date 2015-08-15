@@ -1,7 +1,6 @@
 "use strict";
 
 import React from "react";
-import Handler from "./main";
 import * as actions from "./action";
 import * as reducers from "./reducers";
 
@@ -9,7 +8,7 @@ import { createStore, combineReducers } from "redux";
 import { Provider } from 'react-redux';
 
 
-export function getApp (url) {
+export function getApp (url, Handler) {
     const appReducers = combineReducers(reducers);
 
     const loggedAppReducers = (a, b) => {

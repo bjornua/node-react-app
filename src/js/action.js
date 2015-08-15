@@ -7,3 +7,6 @@ export function setURL (url) {
     };
 }
 
+export function fetch(url) {
+
+}

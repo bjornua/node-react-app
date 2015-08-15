@@ -9,9 +9,10 @@ const encoding = "utf-8";
 function handleRequest(req, res) {
     try {
         const {getApp} = require("../env");
+        const ServerView = require("../server-component");
         let body;
         try {
-            body = React.renderToString(getApp(req.path));
+            body = React.renderToStaticMarkup(getApp(req.path, ServerView));
         } catch (err) {
             return stackTraceHandler(err, req, res);
         }
