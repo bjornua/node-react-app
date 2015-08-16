@@ -42,6 +42,6 @@ export default class BrowserView extends React.Component {
 
 export default connect(function(state) {
     return {
-        url: state.route.url
+        url: state.getIn(["route", "url"])
     };
 })(BrowserView);

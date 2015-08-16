@@ -1,5 +1,3 @@
-"use strict";
-
 import React from "react";
 import Page from "../wrappers/page";
 import { connect } from "react-redux";
@@ -30,6 +28,6 @@ class NotFound extends React.Component {
 
 export default connect(function(state) {
     return {
-        url: state.route.url
+        url: state.getIn(["route", "url"])
     };
 })(NotFound);

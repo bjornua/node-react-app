@@ -1,50 +1,59 @@
 // EVENTS
+import Immutable from "immutable";
 
-
-# Action
-request = {
+export const request = {
     create: function (url) {
         return {
-            type: "REQUEST_CREATED"
-            url: "http://www.google.com/"
+            type: "REQUEST_CREATED",
+            url
         }
     },
     send: function (url) {
         return {
             type: "REQUEST_SENT",
-            url: "http://www.google.com/"
+            url
         }
     },
     fail: function (url) {
         return {
             type: "REQUEST_FAILED",
-            url: "http://www.google.com/"
+            url
         }
     },
-    complete: function (url) {
+    complete: function (url, payload) {
         return {
             type: "REQUEST_COMPLETED",
-            url: "http://www.google.com/"
+            url,
+            payload
         }
     }
 }
 
 const initialState = Immutable.Map();
 
-function reducer (state={}, action) {
-    switch (action.type) {
-        case "REQUEST_CREATED":
-        case "REQUEST_SENT":
-        case "REQUEST_FAILED":
-        case "REQUEST_COMPLETED":
-            var current = state.set(;
-            return 
+const Request = Immutable.Record({
+    url: undefined,
+    status: undefined,
+    payload: undefined
+});
+
+
+const handlers = {
+    REQUEST_CREATED: (state, action) => state.set(action.url, Request({url: action.url, status: "CREATED"})),
+    REQUEST_SENT:    (state, action) => state.setIn([action.url, "status"], "SENT"),
+    REQUEST_FAILED:  (state, action) => state.setIn([action.url, "status"], "FAILED"),
+    REQUEST_COMPLETED: function (state, action) {
+        const {url, payload} = action;
+        const status = "COMPLETED";
+        return state.mergeIn([url], {status, payload});
     }
-
-
-
-    return state;
 }
 
+export function reducer (state=initialState, action) {
+    const handler = handlers[action.type];
 
-
+    if (handler === undefined) {
+        return state;
+    }
+    return handler(state, action);
+}

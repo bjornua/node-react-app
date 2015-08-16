@@ -37,6 +37,6 @@ class ServerView extends React.Component {
 
 export default connect(function(state) {
     return {
-        url: state.route.url
+        url: state.getIn(["route", "url"])
     };
 })(ServerView);
