@@ -23,19 +23,21 @@ request = {
     },
     complete: function (url) {
         return {
-            type: "REQUEST_SUCCESS",
+            type: "REQUEST_COMPLETED",
             url: "http://www.google.com/"
         }
     }
 }
 
-const initialState = Immutable.fromJS({
-    queued: []
-});
-function reducer (state={}, action) {
+const initialState = Immutable.Map();
 
+function reducer (state={}, action) {
     switch (action.type) {
         case "REQUEST_CREATED":
+        case "REQUEST_SENT":
+        case "REQUEST_FAILED":
+        case "REQUEST_COMPLETED":
+            var current = state.set(;
             return 
     }
 
