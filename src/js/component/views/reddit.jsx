@@ -37,7 +37,6 @@ var redditPictures = async(
 }
 
 function getState(dispatch, state) {
-    dispatch(action.request.create("
     dispatch(actions.request.create("https://www.reddit.com/r/pics/new.json"));
 
     if (state.get("
