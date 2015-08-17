@@ -4,15 +4,29 @@
 import express from "express";
 import * as React from "react";
 import stackTraceHandler from "./stacktracehandler";
+import { Provider } from "react-redux";
+
 const encoding = "utf-8";
+
+var render = function (path) {
+    const {getApp} = require("../env");
+    const ServerView = require("../server-component");
+    const store = getApp(path);
+    const reactComponent = (
+        <Provider store={store}>
+            {() => <ServerView />}
+        </Provider>
+    );
+
+    return React.renderToStaticMarkup(reactComponent);
+}
+
 
 function handleRequest(req, res) {
     try {
-        const {getApp} = require("../env");
-        const ServerView = require("../server-component");
         let body;
         try {
-            body = React.renderToStaticMarkup(getApp(req.path, ServerView));
+            body = render(req.path);
         } catch (err) {
             return stackTraceHandler(err, req, res);
         }

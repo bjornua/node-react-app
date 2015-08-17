@@ -31,21 +31,16 @@ export const request = {
 
 const initialState = Immutable.Map();
 
-const Request = Immutable.Record({
-    url: undefined,
-    status: undefined,
-    payload: undefined
-});
-
-
 const handlers = {
-    REQUEST_CREATED: (state, action) => state.set(action.url, Request({url: action.url, status: "CREATED"})),
+    REQUEST_CREATED: (state, action) => state.set(action.url, Immutable.fromJS({url: action.url, status: "CREATED"})),
     REQUEST_SENT:    (state, action) => state.setIn([action.url, "status"], "SENT"),
     REQUEST_FAILED:  (state, action) => state.setIn([action.url, "status"], "FAILED"),
     REQUEST_COMPLETED: function (state, action) {
         const {url, payload} = action;
         const status = "COMPLETED";
-        return state.mergeIn([url], {status, payload});
+        const payloadIM = Immutable.fromJS(payload);
+
+        return state.mergeIn([url], {status, payloadIM});
     }
 }
 

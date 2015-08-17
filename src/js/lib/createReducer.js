@@ -1,9 +1,8 @@
 import Immutable, { Map, List } from 'immutable';
 
 function validateReducerOutput(state) {
-    console.log(state);
     if (!Map.isMap(state) && !List.isList(state)) {
-      throw new TypeError('Reducers must return Immutable objects.');
+        throw new TypeError('Reducers must return Immutable objects.');
     }
 }
 
