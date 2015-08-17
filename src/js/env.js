@@ -11,8 +11,9 @@ import { createStore, combineReducers } from "redux";
 import createReducer from "./lib/createReducer";
 
 function log (varName, obj) {
-    const objPrint = JSON.stringify(obj, null, '    ');
-    console.log ("%s = %s", varName, objPrint);
+    return console.log(varName, obj);
+    // const objPrint = JSON.stringify(obj, null, '    ');
+    // console.log ("%s = %s", varName, objPrint);
 }
 
 export function getApp (url, Handler) {

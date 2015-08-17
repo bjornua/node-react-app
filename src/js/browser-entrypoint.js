@@ -23,14 +23,20 @@ function fetcher(store) {
         const async = store.getState().get("async");
         const created = async
             .filter((val) => val.get('status') === 'CREATED')
-            .flip().toList();
+            .flip().toSet();
 
-        created.forEach(function (url) {
+        const queued = created.subtract(async
+            .filter((val) => val.get('status') !== 'CREATED')
+            .flip().toSet()
+        )
+
+        queued.forEach(function (url) {
             store.dispatch(actions.request.send(url));
 
-            oboe(url).done(function (things) {
-                store.dispatch(actions.request.complete(url, things));
-            }).fail(function () {
+            oboe(url).done(function (payload) {
+                store.dispatch(actions.request.complete(url, payload));
+            }).fail(function (error) {
+                console.error(error.thrown);
                 store.dispatch(actions.request.fail(url));
             });
 

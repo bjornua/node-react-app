@@ -40,7 +40,7 @@ const handlers = {
         const status = "COMPLETED";
         const payloadIM = Immutable.fromJS(payload);
 
-        return state.mergeIn([url], {status, payloadIM});
+        return state.mergeIn([url], {status, payload: payloadIM});
     }
 }
 
