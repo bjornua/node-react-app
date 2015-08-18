@@ -1,5 +1,7 @@
 // EVENTS
 import Immutable from "immutable";
+import React from "react";
+import { connect } from "react-redux";
 
 export const request = {
     create: function (url) {
@@ -51,4 +53,39 @@ export function reducer (state=initialState, action) {
         return state;
     }
     return handler(state, action);
+}
+
+
+export function createContainer(url, {success} = {}) {
+    const Success = success;
+
+    class AsyncContainer extends React.Component {
+        constructor(...args) {
+            super(...args);
+            this.props.load();
+        }
+        render() {
+            // console.log(this.props);
+            switch(this.props.status) {
+                case "COMPLETED":
+                    return <Success {...this.props.ownProps} payload={this.props.payload} />;
+            }
+            return <div>{this.props.status}</div>;
+        }
+    }
+
+    return connect(
+        function(state, ownProps) {
+            console.log(ownProps);
+            return {
+                status: state.getIn(["async", url, 'status']),
+                payload: state.getIn(["async", url, 'payload']),
+                ownProps: ownProps
+            };
+        }, function (dispatch) {
+            return {
+                load: () => dispatch(request.create(url))
+            };
+        }
+    )(AsyncContainer);
 }

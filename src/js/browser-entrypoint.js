@@ -5,7 +5,7 @@ import {getApp} from "./env";
 import BrowserView from "./browser-component";
 import {getWindowPath} from "./browser-component";
 import { Provider } from "react-redux";
-import oboe from "oboe";
+import request from "superagent";
 import * as actions from "./action";
 
 
@@ -25,20 +25,22 @@ function fetcher(store) {
             .filter((val) => val.get('status') === 'CREATED')
             .flip().toSet();
 
-        const queued = created.subtract(async
-            .filter((val) => val.get('status') !== 'CREATED')
-            .flip().toSet()
-        )
-
-        queued.forEach(function (url) {
+        created.forEach(function (url) {
             store.dispatch(actions.request.send(url));
 
-            oboe(url).done(function (payload) {
-                store.dispatch(actions.request.complete(url, payload));
-            }).fail(function (error) {
-                console.error(error.thrown);
-                store.dispatch(actions.request.fail(url));
-            });
+            request.get(url)
+                .end(function (err, res) {
+                    if (err !== null) {
+                        store.dispatch(actions.request.fail(url));
+                        console.error(url);
+                        console.error(err);
+                        return;
+                    }
+                    store.dispatch(actions.request.complete(url, res.body));
+                })
+                // .on('error', error => {
+                // console.error(error);
+            // });
 
             
         });

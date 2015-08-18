@@ -11,7 +11,7 @@ export default class Page extends React.Component {
             className += " " + this.props.className;
         }
 
-        return <Base title={this.props.title}>
+        return <Base>
             <div className={className}>
                 {this.props.children}
             </div>

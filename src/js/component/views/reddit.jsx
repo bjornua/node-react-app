@@ -2,56 +2,34 @@
 
 import React from "react";
 import Page from "../wrappers/page";
-import { connect } from "react-redux";
 import Immutable from "immutable";
-import * as actions from "../../action";
+import { createContainer } from "../../lib/async";
 
-
-function createContainer({success} = {}) {
-    const url = "https://www.reddit.com/r/pics/new/.json";
-    const Success = success;
-    class AsyncContainer extends React.Component {
-        constructor(...args) {
-            super(...args);
-            this.props.load();
-        }
-        render() {
-            // console.log(this.props);
-            switch(this.props.status) {
-                case "COMPLETED":
-                    return <Success {...this.props.ownProps} payload={this.props.payload} />;
-            }
-            return <div>{this.props.status}</div>;
-        }
-    }
-
-    return connect(
-        function(state, ownProps) {
-            console.log(ownProps);
-            return {
-                status: state.getIn(["async", url, 'status']),
-                payload: state.getIn(["async", url, 'payload']),
-                ownProps: ownProps
-            };
-        }, function (dispatch) {
-            return {
-                load: () => dispatch(actions.request.create(url))
-            };
-        }
-    )(AsyncContainer);
-}
 
 class RedditFeed extends React.Component {
     render() {
-        console.log('Loaded Feed');
-        return <pre>
-            {JSON.stringify(this.props.payload.toJS(), null, ' ')}
-        </pre>;
+        const { payload } = this.props;
+
+        const pictures = payload.getIn(["data", "children"])
+            .map(val => { console.log(val.toJS()); return val; })
+            .map(val => val.get("data"))
+            .filter(val => val.get("domain") === "i.imgur.com")
+            .map(val => val.getIn(["url"]))
+            .map(function(url) {
+                return <img style={{width: "50%", height: "10em"}} src={url} />;
+            });
+
+        return <div>
+            {pictures.toJS()}
+        </div>;
     }
 }
-const RedditFeed2 = createContainer({
-    success: RedditFeed
-});
+const RedditFeed2 = createContainer(
+    "https://www.reddit.com/r/pics/new/.json",
+    {
+        success: RedditFeed
+    }
+);
 
 class Reddit extends React.Component {
     render() {
