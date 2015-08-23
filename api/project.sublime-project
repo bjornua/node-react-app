@@ -2,9 +2,7 @@
     "folders": [
         {
             "folder_exclude_patterns": [
-                "node_modules",
-                ".npm",
-                "build"
+                "venv",
             ],
             "follow_symlinks": false,
             "path": "."

@@ -1,47 +1,77 @@
-#import sqlite3
+#!/bin/python2
+
+import subprocess
+import sys
+from os.path import dirname, join, realpath, exists
+from os import execv
+import os
+
+def install(venv_dir, upgrade, *args):
+    pip = join(venv_dir, 'bin', 'pip')
+
+    pargs = (pip, 'install')
+
+    if upgrade:
+        pargs += ('--upgrade',)
+
+    pargs += args
+
+    subprocess.check_call(pargs)
+     
+    
 
 
+def swaptovirtualenv(root, upgrade):
+    venv_dir = join(root, 'venv')
+    venv_interpreter = join(venv_dir, 'bin', 'python2')
 
-def get_directories(mainfile):
-    from os.path import dirname, join
-    rootdir = rootdir
-    appdir = dirname(mainfile)
-    datadir = dirname(datadir)
+    interpreter = realpath(sys.executable)
 
-    return rootdir, appdir, datadir
+    if interpreter == venv_interpreter:
+        if upgrade:
+            install(venv_dir, True, 'pip')
 
+        install(venv_dir, upgrade, '-r', 'requirements.txt')
+        return
 
-def init_config():
-    main_directory = get_path()
+    if not exists (venv_dir):
+        print "Installing virtualenv in {}".format(venv_dir)
+        subprocess.check_output(['virtualenv2', venv_dir], env=os.environ)
+        upgrade = True
 
+    if not exists(venv_interpreter):
+        print "Could not find interpreter {}".format(venv_interpreter)
+        return
 
+    print
+    print '-- EXEC {}'.format(venv_interpreter)
+    print
 
+    args = venv_interpreter, realpath(__file__)
+    if upgrade:
+        args = args + ('--upgrade', )
 
-def initialize():
-    get_directories()
-    setup_runtime(root_directory)
-
-    config = init_config(mainfile)
-    dbpool = init_dbpool()
-
-    eventstore = init_eventstore()
-
-    return dbpool
-
-
-def run(dbpool, config):
-    pass
-
-def shutdown(dbpool, config):
-    pass
+    execv(venv_interpreter, args)
 
 
-def main():
-    dbpool, config = initialize(mainfile=__file__)
-    run(dbpool, config)
-    shutdown(dbpool, config)
+def setup_env(upgrade):
+    root = realpath(__file__)
+    root = dirname(root)
+    src = join(root, 'src')
+
+    swaptovirtualenv(root, upgrade)
+
+    sys.path[0] = src
+
+    print
+    print '-- setup_env_complete'
+    print
+
+    import main
+    main.main()
 
 
+if __name__ == '__main__':
+    upgrade = '--upgrade' in sys.argv
 
-if __name__ == "__main__":
-    main()
+    setup_env(upgrade)
