@@ -3,72 +3,55 @@
 import subprocess
 import sys
 from os.path import dirname, join, realpath, exists
-from os import execv
 import os
 
+
+def run(venv_dir, executable, *args, **kwargs):
+    path = join(venv_dir, 'bin', executable)
+    args = (path, ) + args
+    env = kwargs.get('env')
+
+    return subprocess.check_call(args, env=env)
+
+
+
 def install(venv_dir, upgrade, *args):
-    pip = join(venv_dir, 'bin', 'pip')
-
-    pargs = (pip, 'install')
-
     if upgrade:
-        pargs += ('--upgrade',)
-
-    pargs += args
-
-    subprocess.check_call(pargs)
-     
-    
+        run(venv_dir, 'pip', 'install', '--upgrade', *args)
+    else:
+        run(venv_dir, 'pip', 'install', *args)
 
 
-def swaptovirtualenv(root, upgrade):
-    venv_dir = join(root, 'venv')
-    venv_interpreter = join(venv_dir, 'bin', 'python2')
 
-    interpreter = realpath(sys.executable)
+def swaptovirtualenv(venv_dir, upgrade):
+    if upgrade:
+        install(venv_dir, True, 'pip')
 
-    if interpreter == venv_interpreter:
-        if upgrade:
-            install(venv_dir, True, 'pip')
-
-        install(venv_dir, upgrade, '-r', 'requirements.txt')
-        return
+    install(venv_dir, upgrade, '-r', 'requirements.txt')
+    return False
 
     if not exists (venv_dir):
         print "Installing virtualenv in {}".format(venv_dir)
         subprocess.check_output(['virtualenv2', venv_dir], env=os.environ)
         upgrade = True
 
-    if not exists(venv_interpreter):
-        print "Could not find interpreter {}".format(venv_interpreter)
-        return
-
-    print
-    print '-- EXEC {}'.format(venv_interpreter)
-    print
-
-    args = venv_interpreter, realpath(__file__)
-    if upgrade:
-        args = args + ('--upgrade', )
-
-    execv(venv_interpreter, args)
+    return True
 
 
 def setup_env(upgrade):
     root = realpath(__file__)
     root = dirname(root)
+    venv_dir = join(root, 'venv')
     src = join(root, 'src')
 
-    swaptovirtualenv(root, upgrade)
+    env = os.environ.copy()
+    env['PYTHONPATH'] = src
 
-    sys.path[0] = src
+    swaptovirtualenv(venv_dir, upgrade)
 
-    print
-    print '-- setup_env_complete'
-    print
+    run(venv_dir, 'python2', 'src/main.py', env=env)
 
-    import main
-    main.main()
+
 
 
 if __name__ == '__main__':
