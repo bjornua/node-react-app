@@ -6,46 +6,49 @@ import subprocess
 from os.path import dirname, join, realpath, exists
 
 
-def run(venv_dir, executable, *args, **kwargs):
-    path = join(venv_dir, 'bin', executable)
+def run(dir_venv, executable, *args, **kwargs):
+    path = join(dir_venv, 'bin', executable)
     args = (path, ) + args
     env = kwargs.get('env')
+    cwd = kwargs.get('cwd')
 
-    return subprocess.check_call(args, env=env)
+    return subprocess.check_call(args, env=env, cwd=cwd)
 
 
-def install(venv_dir, upgrade, *args):
+def install(dir_venv, upgrade, *args):
     if upgrade:
-        run(venv_dir, 'pip', 'install', '--upgrade', *args)
+        run(dir_venv, 'pip', 'install', '--upgrade', *args)
     else:
-        run(venv_dir, 'pip', 'install', *args)
+        run(dir_venv, 'pip', 'install', *args)
 
 
-def swaptovirtualenv(venv_dir, upgrade):
-    if not exists(venv_dir):
-        print "Installing virtualenv in {}".format(venv_dir)
-        subprocess.check_output(['virtualenv2', venv_dir], env=os.environ)
+def swaptovirtualenv(dir_venv, upgrade):
+    if not exists(dir_venv):
+        print "Installing virtualenv in {}".format(dir_venv)
+        subprocess.check_output(['virtualenv2', dir_venv], env=os.environ)
         upgrade = True
 
     if upgrade:
-        install(venv_dir, True, 'pip')
+        install(dir_venv, True, 'pip')
 
-    install(venv_dir, upgrade, '-r', 'requirements.txt')
+    install(dir_venv, upgrade, '-r', 'requirements.txt')
 
 
 def setup_env(upgrade):
-    root = realpath(__file__)
-    root = dirname(root)
-    venv_dir = join(root, 'venv')
-    src = join(root, 'src')
+    dir_root = realpath(__file__)
+    dir_root = dirname(dir_root)
+    dir_venv = join(dir_root, 'venv')
+    dir_src = join(dir_root, 'src')
+    dir_python = join(dir_src, 'python')
+
+    path_main = join(dir_python, 'main.py')
 
     env = os.environ.copy()
-    env['PYTHONPATH'] = src
+    env['PYTHONPATH'] = dir_python
 
-    swaptovirtualenv(venv_dir, upgrade)
+    swaptovirtualenv(dir_venv, upgrade)
 
-    run(venv_dir, 'python2', 'src/main.py', env=env)
-
+    run(dir_venv, 'python2', path_main, env=env, cwd=dir_src)
 
 
 
