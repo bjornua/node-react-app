@@ -1,9 +1,9 @@
 #!/bin/python2
 
-import subprocess
-import sys
-from os.path import dirname, join, realpath, exists
 import os
+import sys
+import subprocess
+from os.path import dirname, join, realpath, exists
 
 
 def run(venv_dir, executable, *args, **kwargs):
@@ -14,7 +14,6 @@ def run(venv_dir, executable, *args, **kwargs):
     return subprocess.check_call(args, env=env)
 
 
-
 def install(venv_dir, upgrade, *args):
     if upgrade:
         run(venv_dir, 'pip', 'install', '--upgrade', *args)
@@ -22,20 +21,16 @@ def install(venv_dir, upgrade, *args):
         run(venv_dir, 'pip', 'install', *args)
 
 
-
 def swaptovirtualenv(venv_dir, upgrade):
-    if upgrade:
-        install(venv_dir, True, 'pip')
-
-    install(venv_dir, upgrade, '-r', 'requirements.txt')
-    return False
-
-    if not exists (venv_dir):
+    if not exists(venv_dir):
         print "Installing virtualenv in {}".format(venv_dir)
         subprocess.check_output(['virtualenv2', venv_dir], env=os.environ)
         upgrade = True
 
-    return True
+    if upgrade:
+        install(venv_dir, True, 'pip')
+
+    install(venv_dir, upgrade, '-r', 'requirements.txt')
 
 
 def setup_env(upgrade):
