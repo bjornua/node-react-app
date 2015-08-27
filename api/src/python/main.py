@@ -24,11 +24,9 @@ def setup():
     db.execute_file(conn, 'create.sql')
 
 
-
 @app.before_request
 def setup_request():
     g.db = db.get_conn()
-
 
 
 @app.route('/event/', methods=['GET'])
