@@ -1,16 +1,11 @@
 from flask import Flask, g, make_response
 import json
+import sys
+
+import lindo.db as db
 
 
 app = Flask(__name__)
-
-
-import os
-import db
-import sys
-print sys.path
-
-print os.getcwd()
 
 
 def json_response(object):
@@ -33,10 +28,9 @@ def setup_request():
 
 @app.route('/event/', methods=['GET'])
 def event():
-    db = g.db
-    c = db.cursor()
-    c.execute('select * from event')
-    return json_response(c.fetchall())
+    result = db.execute(g.db, 'select * from event')
+    
+    return json_response(result)
 
 
 def main(host='127.0.0.1'):
@@ -44,7 +38,6 @@ def main(host='127.0.0.1'):
 
 
 if __name__ == '__main__':
-    import sys
     args = sys.argv[1:]
     if len(args) > 0:
         main(args[0])

@@ -1,13 +1,15 @@
 #!/bin/bash
 sudo --background -u postgres postgres -D /var/lib/postgres/data/
+IPADDR=$(ip -4 addr show eth0 | grep -Eo "([0-9]+\\.){3}[0-9]+")
 
 function post_break {
     echo
     echo
-    echo "To restart, run: /app/src/python/launcher.py"
+    echo "To restart, run: /app/src/python/launcher.py $IPADDR"
     echo
     echo
     bash
+    set -e
     echo
     echo
     echo Shutting down postgres...
@@ -25,7 +27,6 @@ function post_break {
     echo
     echo Ready for snapshot... Ctrl+C to exit
     echo
-    set -e
     while true; do sleep 10m; done;
 }
 
@@ -35,8 +36,5 @@ function post_break {
 trap post_break INT
 
 
-IPADDR=$(ip -4 addr show eth0 | grep -Eo "([0-9]+\\.){3}[0-9]+")
-
-echo http://$IPADDR:5000/
 
 /app/src/python/launcher.py $IPADDR
