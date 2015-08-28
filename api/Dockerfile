@@ -9,10 +9,9 @@ RUN\
     pacman-db-upgrade &&\
     pacman-key --populate archlinux &&\
     pacman-key --refresh-keys &&\
-    pacman -Syu --noconfirm &&\
-    pacman -S --noconfirm python2 python2-virtualenv postgresql
+    pacman -Su --noconfirm \
+        python2 python2-virtualenv base-devel postgresql vim htop man
 
-RUN pacman -S sudo vim --noconfirm
 RUN sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' -A trust
 
 RUN \
@@ -23,14 +22,13 @@ RUN \
 RUN \
 (\
     useradd developer &&\
+    usermod -aG sudo developer &&\
     cp -R /etc/skel/ /home/developer/ &&\
-    chown -R developer.developer /home/developer/ &&\
-    usermod -aG sudo developer \
+    mkdir -p /app/src &&\
+    chown -R developer.developer /app /home/developer/ \
 )
 
-RUN pacman -S --noconfirm base-devel
 
 USER developer
 
-CMD (cd /home/developer/api && ./boot_docker.sh)
-# RUN pacman -S dhcpcd --noconfirm
+CMD (cd /app && ./src/bash/boot_docker.sh)
