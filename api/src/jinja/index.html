@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Sitemap</title>
+        <style>
+            ul {
+                width: 40em;
+            }
+            li {
+                font-size: 200%;
+                background: #fafafa;
+            }
+            li:hover {
+                background: #eee;
+            }
+            li a {
+                display: block;
+                padding: 0.3em;
+                margin: 0.3em 0;
+            }
+        </style>
+    </head>
+    <body>
+        <ul>
+        {% for rule in rules %}
+            <li><a href="{{rule}}">{{rule}}</a></li>
+        {% endfor %}
+        </ul>
+    </body>
+</html>

@@ -49,7 +49,10 @@ def setup_env(upgrade, *args):
 
     swaptovirtualenv(dir_python, dir_venv, upgrade)
 
-    run(dir_venv, 'python2', path_main, *args, env=env, cwd=dir_src)
+    try:
+        run(dir_venv, 'python2', path_main, *args, env=env, cwd=dir_src)
+    except:
+        pass
 
 
 
@@ -62,5 +65,5 @@ if __name__ == '__main__':
 
     if len(args) > 0:
         setup_env(upgrade, *args)
-
-    setup_env(upgrade)
+    else:
+        setup_env(upgrade)
