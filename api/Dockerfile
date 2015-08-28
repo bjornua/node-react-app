@@ -12,22 +12,16 @@ RUN\
     pacman -Su --noconfirm \
         python2 python2-virtualenv base-devel postgresql vim htop man
 
-RUN sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' -A trust
-
-RUN \
+RUN (\
+    sudo -u postgres initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data' -A trust &&\
     groupadd sudo &&\
-    echo "%sudo ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-group
-
-# Developers developers developers developers
-RUN \
-(\
+    echo "%sudo ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-group &&\
     useradd developer &&\
     usermod -aG sudo developer &&\
     cp -R /etc/skel/ /home/developer/ &&\
     mkdir -p /app/src &&\
     chown -R developer.developer /app /home/developer/ \
 )
-
 
 USER developer
 
