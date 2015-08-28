@@ -33,7 +33,7 @@ def swaptovirtualenv(dir_python, dir_venv, upgrade):
     install(dir_venv, upgrade, '-r', join(dir_python, 'requirements.txt'))
 
 
-def setup_env(upgrade):
+def setup_env(upgrade, *args):
     dir_root = dirname(__file__)
     dir_root = join(dir_root, '..', '..')
     dir_root = realpath(dir_root)
@@ -49,11 +49,18 @@ def setup_env(upgrade):
 
     swaptovirtualenv(dir_python, dir_venv, upgrade)
 
-    run(dir_venv, 'python2', path_main, env=env, cwd=dir_src)
+    run(dir_venv, 'python2', path_main, *args, env=env, cwd=dir_src)
 
 
 
 if __name__ == '__main__':
-    upgrade = '--upgrade' in sys.argv
+    args = sys.argv[1:]
+
+    upgrade = '--upgrade' in args
+
+    args = [a for a in args if a != '--upgrade']
+
+    if len(args) > 0:
+        setup_env(upgrade, *args)
 
     setup_env(upgrade)

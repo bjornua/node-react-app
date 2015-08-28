@@ -7,6 +7,8 @@ app = Flask(__name__)
 
 import os
 import db
+import sys
+print sys.path
 
 print os.getcwd()
 
@@ -37,9 +39,14 @@ def event():
     return json_response(c.fetchall())
 
 
-def main():
-    app.run(debug=True, threaded=True)
+def main(host='127.0.0.1'):
+    app.run(debug=True, threaded=True, host=host)
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    args = sys.argv[1:]
+    if len(args) > 0:
+        main(args[0])
+    else:
+        main()

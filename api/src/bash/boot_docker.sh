@@ -2,6 +2,11 @@
 sudo --background -u postgres postgres -D /var/lib/postgres/data/
 
 function post_break {
+    echo
+    echo
+    echo "To restart, run: /app/src/python/launcher.py"
+    echo
+    echo
     bash
     echo
     echo
@@ -24,6 +29,14 @@ function post_break {
     while true; do sleep 10m; done;
 }
 
+
+
+
 trap post_break INT
 
-/app/src/python/launcher.py
+
+IPADDR=$(ip -4 addr show eth0 | grep -Eo "([0-9]+\\.){3}[0-9]+")
+
+echo http://$IPADDR:5000/
+
+/app/src/python/launcher.py $IPADDR
