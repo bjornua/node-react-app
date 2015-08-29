@@ -2,6 +2,7 @@
 sudo --background -u postgres postgres -D /var/lib/postgres/data/
 IPADDR=$(ip -4 addr show eth0 | grep -Eo "([0-9]+\\.){3}[0-9]+")
 
+trap true INT
 /app/src/python/launcher.py $IPADDR
 
 echo

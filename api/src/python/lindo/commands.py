@@ -1,8 +1,9 @@
 from flask import Blueprint, request, g
 
 from lindo.utils import debug_response
-# from lindo.eventsourcing import event
+from lindo.eventsourcing import event
 commands = Blueprint('commands', __name__)
+
 
 @commands.route('/session/new/')
 def new_session ():

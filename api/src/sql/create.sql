@@ -29,6 +29,7 @@ $$ LANGUAGE 'plpgsql';
 CREATE TABLE IF NOT EXISTS event (
     id int8 default event_counter_next() PRIMARY KEY,
     date timestamp default current_timestamp,
-    type bigint
+    type bigint,
+    payload json
 );
 COMMIT;

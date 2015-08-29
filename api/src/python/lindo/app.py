@@ -19,13 +19,13 @@ app.register_blueprint(lindo.commands.commands, url_prefix='/api')
 
 @app.before_first_request
 def setup():
-    conn = db.get_conn()
+    conn = db.connect()
     db.execute_file(conn, 'create.sql')
 
 
 @app.before_request
 def setup_request():
-    g.db = db.get_conn()
+    g.db = db.connect()
 
 
 def has_no_empty_params(rule):

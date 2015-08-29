@@ -16,7 +16,7 @@ def createuser():
 
 
 
-def get_conn():
+def connect():
     # createuser('lindo')
     import psycopg2
 
@@ -34,21 +34,25 @@ def get_conn():
     return db
 
 
-def execute_file(db, filename):
+def execute_file(db, filename, kwargs=None):
     path = os.path.join('sql', filename)
 
     with open(path, 'r') as f:
         sql = f.read()
 
-    execute(db, sql)
+    execute(db, sql, kwargs)
 
 
-def execute(db, query):
+def execute(db, query, kwargs=None):
+    if kwargs is None:
+        kwargs = {}
+
+
     import psycopg2
     print
     print 'SEND QUERY: {!r}'.format(query)
     cursor = db.cursor()
-    cursor.execute(query)
+    cursor.execute(query, kwargs)
 
 
     try:

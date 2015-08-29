@@ -23,6 +23,13 @@ RUN (\
     chown -R developer.developer /app /home/developer/ \
 )
 
+RUN (\
+    echo "host all all 0.0.0.0/0 trust" >> /var/lib/postgres/data/pg_hba.conf &&\
+    echo "listen_addresses = '0.0.0.0'" >> /var/lib/postgres/data/postgresql.conf \
+)
+
+
+
 USER developer
 
 CMD (cd /app && ./src/bash/boot_docker.sh)
