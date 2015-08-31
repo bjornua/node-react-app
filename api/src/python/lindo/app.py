@@ -4,7 +4,7 @@ from lindo.utils import debug_response
 
 
 import lindo.db as db
-import lindo.views.commands
+from lindo.commands import commands
 
 from os.path import join, dirname, realpath
 
@@ -14,13 +14,13 @@ app = Flask(
     import_name=__name__,
     template_folder=template_folder
 )
-app.register_blueprint(lindo.commands.commands, url_prefix='/api')
+app.register_blueprint(commands, url_prefix='/api')
 
 
 @app.before_first_request
 def setup():
     conn = db.connect()
-    db.execute_file(conn, 'create.sql')
+    db.execute_file(conn, 'create_tables.sql')
 
 
 @app.before_request

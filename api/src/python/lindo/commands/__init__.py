@@ -13,12 +13,20 @@ def new_session ():
     return debug_response(request.args)
 
 
+
 @commands.route('/session/renew/')
 def session_renew():
+    if not 'session_id' in request.args:
+        return debug_response('Fail')
+
     event(g.db,
         type='session_pinged',
+        payload={
+            'session_id': request.args['session_id']
+        }
     )
     return debug_response(request.args)
+
 
 
 

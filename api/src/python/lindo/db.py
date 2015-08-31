@@ -5,9 +5,9 @@ def createuser():
     import psycopg2
     db = psycopg2.connect(user='postgres')
     execute(db, 'SELECT 1')
-    execute_file(db, 'createrole.sql')
+    execute_file(db, 'create_role.sql')
     try:
-        execute_file(db, 'createdb.sql')
+        execute_file(db, 'create_db.sql')
     except psycopg2.ProgrammingError, e:
         if e.message != 'database "lindo" already exists\n':
             raise e

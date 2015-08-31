@@ -1,5 +1,3 @@
-START TRANSACTION;
-
 CREATE TABLE IF NOT EXISTS event_counter (
     "cur" bigint
 );
@@ -27,9 +25,19 @@ $$ LANGUAGE 'plpgsql';
 
 
 CREATE TABLE IF NOT EXISTS event (
-    id int8 default event_counter_next() PRIMARY KEY,
+    id bigint default event_counter_next() PRIMARY KEY,
     date timestamp default current_timestamp,
-    type bigint,
+    type text,
     payload json
 );
+
+
+CREATE TABLE IF NOT EXISTS event_aggregates (
+    instance_id serial,
+    counter_pos bigint default 0
+    
+
+
+);
+
 COMMIT;
