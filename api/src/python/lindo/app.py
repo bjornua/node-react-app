@@ -4,7 +4,7 @@ from lindo.utils import debug_response
 
 
 import lindo.db as db
-import lindo.commands
+import lindo.views.commands
 
 from os.path import join, dirname, realpath
 
