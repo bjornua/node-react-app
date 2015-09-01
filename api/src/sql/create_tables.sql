@@ -27,14 +27,14 @@ $$ LANGUAGE 'plpgsql';
 CREATE TABLE IF NOT EXISTS event (
     pos bigint default event_counter_next() PRIMARY KEY,
     date timestamp default current_timestamp,
-    type text,
+    name text,
     payload json
 );
 
 CREATE TABLE IF NOT EXISTS aggregate (
     id serial PRIMARY KEY,
     name text,
-    counter_pos bigint default 0,
+    counter_pos bigint default 0
 );
 
 -- CREATE TABLE IF NOT EXISTS instance (
@@ -53,6 +53,4 @@ Start server:
     for a in aggregate:
         if a.selected():
 
-/*
-
-COMMIT;
+*/

@@ -1,8 +1,8 @@
 import os.path
+import psycopg2
 
 
 def createuser():
-    import psycopg2
     db = psycopg2.connect(user='postgres')
     execute(db, 'SELECT 1')
     execute_file(db, 'create_role.sql')
@@ -15,10 +15,8 @@ def createuser():
     db.close()
 
 
-
 def connect():
     # createuser('lindo')
-    import psycopg2
 
     try:
         db = psycopg2.connect(user='lindo')
@@ -29,8 +27,6 @@ def connect():
         createuser()
         db = psycopg2.connect(user='lindo')
 
-
-
     return db
 
 
@@ -40,20 +36,18 @@ def execute_file(db, filename, kwargs=None):
     with open(path, 'r') as f:
         sql = f.read()
 
-    execute(db, sql, kwargs)
+    return execute(db, sql, kwargs)
 
 
 def execute(db, query, kwargs=None):
     if kwargs is None:
         kwargs = {}
 
-
     import psycopg2
     print
     print 'SEND QUERY: {!r}'.format(query)
     cursor = db.cursor()
     cursor.execute(query, kwargs)
-
 
     try:
         results = cursor.fetchall()
@@ -62,5 +56,5 @@ def execute(db, query, kwargs=None):
 
     print'GET RESULT: {!r}'.format(results)
     print
-    cursor.close()    
+    cursor.close()
     return results

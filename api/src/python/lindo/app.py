@@ -1,12 +1,11 @@
 from flask import Flask, g, render_template
-
-from lindo.utils import debug_response
-
+from os.path import join, dirname, realpath
 
 import lindo.db as db
+
+from lindo.utils import debug_response
 from lindo.commands import commands
 
-from os.path import join, dirname, realpath
 
 template_folder = realpath(join(dirname(__file__), '..', '..', 'jinja'))
 
@@ -21,17 +20,27 @@ app.register_blueprint(commands, url_prefix='/api')
 def setup():
     conn = db.connect()
     db.execute_file(conn, 'create_tables.sql')
+    conn.commit()
 
 
 @app.before_request
 def setup_request():
+    from lindo.lib.event import Events
     g.db = db.connect()
+    g.events = Events(g.db)
+
+
+@app.teardown_request
+def teardown_request(exception=None):
+    g.db.rollback()
+    g.db.close()
 
 
 def has_no_empty_params(rule):
     defaults = rule.defaults if rule.defaults is not None else ()
     arguments = rule.arguments if rule.arguments is not None else ()
     return len(defaults) >= len(arguments)
+
 
 @app.route("/")
 def site_map():
@@ -43,5 +52,5 @@ def site_map():
 @app.route('/event/latests/', methods=['GET'])
 def latests_event():
     result = db.execute(g.db, 'select * from event order by id desc')
-    
+
     return debug_response(result)
