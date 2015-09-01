@@ -31,13 +31,28 @@ CREATE TABLE IF NOT EXISTS event (
     payload json
 );
 
-
-CREATE TABLE IF NOT EXISTS event_aggregates (
-    instance_id serial,
-    counter_pos bigint default 0
-    
-
-
+CREATE TABLE IF NOT EXISTS aggregate (
+    id serial PRIMARY KEY,
+    name text,
+    counter_pos bigint default 0,
 );
+
+-- CREATE TABLE IF NOT EXISTS instance (
+--     id text PRIMARY KEY,
+--     ping timestamp
+-- );
+
+-- CREATE TABLE IF NOT EXISTS instance_aggregate
+--     instance_id text,
+--     aggregate_id bigint
+-- )
+
+/*
+
+Start server:
+    for a in aggregate:
+        if a.selected():
+
+/*
 
 COMMIT;
