@@ -25,7 +25,7 @@ $$ LANGUAGE 'plpgsql';
 
 
 CREATE TABLE IF NOT EXISTS event (
-    id bigint default event_counter_next() PRIMARY KEY,
+    pos bigint default event_counter_next() PRIMARY KEY,
     date timestamp default current_timestamp,
     type text,
     payload json
