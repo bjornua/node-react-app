@@ -1,32 +1,25 @@
 from flask import Blueprint, request, g
 
 from lindo.utils import debug_response
-from lindo.eventsourcing import event
+
 commands = Blueprint('commands', __name__)
 
 
 @commands.route('/session/new/')
-def new_session ():
-    event(g.db,
-        type='session_added'
-    )
-    return debug_response(request.args)
-
+def new_session():
+    res = g.events.put(name='session_added')
+    return debug_response(res)
 
 
 @commands.route('/session/renew/')
 def session_renew():
-    if not 'session_id' in request.args:
+    if 'session_id' not in request.args:
         return debug_response('Fail')
 
-    event(g.db,
-        type='session_pinged',
+    res = g.events.put(
+        name='session_pinged',
         payload={
             'session_id': request.args['session_id']
         }
     )
-    return debug_response(request.args)
-
-
-
-
+    return debug_response(res)

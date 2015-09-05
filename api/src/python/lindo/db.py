@@ -1,66 +1,85 @@
 import os.path
+import psycopg2
+import json
+from collections import OrderedDict
 
 
-def createuser():
-    import psycopg2
-    db = psycopg2.connect(user='postgres')
-    execute(db, 'SELECT 1')
-    execute_file(db, 'create_role.sql')
-    try:
-        execute_file(db, 'create_db.sql')
-    except psycopg2.ProgrammingError, e:
-        if e.message != 'database "lindo" already exists\n':
-            raise e
+class Connection(object):
+    def __init__(self, user):
+        try:
+            db = psycopg2.connect(user=user)
+        except psycopg2.OperationalError as e:
+            if e.message != 'FATAL:  role "lindo" does not exist\n':
+                raise e
+            Connection(user='postgres').createuser('lindo').close()
+            db = psycopg2.connect(user='lindo')
 
-    db.close()
+        self.db = db
+
+    def createuser(self, username):
+        self.runfile('create_role.sql', {'username': username})
+        try:
+            self.runfile('create_db.sql')
+        except psycopg2.ProgrammingError as e:
+            if e.message != 'database "lindo" already exists\n':
+                raise e
+
+        return self
+
+    def runfile(self, filename, kwargs=None, one=False):
+        path = os.path.join('sql', filename)
+
+        with open(path, 'r') as f:
+            query = f.read()
+
+        return self.run(query=query, kwargs=kwargs, one=one)
+
+    def run(self, query, kwargs=None, one=False):
+        if kwargs is None:
+            kwargs = {}
+
+        print()
+        print('SEND QUERY: {!r}'.format(query))
+        cursor = self.db.cursor()
+        cursor.execute(query, kwargs)
+        results = querytodict(cursor, one)
+
+        print('GET RESULT: {!r}'.format(results))
+        print()
+        cursor.close()
+        return results
+
+    def commit(self):
+        self.db.commit()
+
+    def rollback(self):
+        self.db.rollback()
+
+    def close(self):
+        self.db.close()
 
 
+def querytodict(cursor, one=False):
+    desc = cursor.description
+    if desc is None:
+        return
 
-def connect():
-    # createuser('lindo')
-    import psycopg2
+    def convtypes(row):
+        for i, v in enumerate(row):
+            if desc[i].type_code == 114:  # PostgreSQL JSON
+                yield json.loads(v)
+            else:
+                yield v
 
-    try:
-        db = psycopg2.connect(user='lindo')
-    except psycopg2.OperationalError, e:
-        print repr(e.message)
-        if e.message != 'FATAL:  role "lindo" does not exist\n':
-            raise e
-        createuser()
-        db = psycopg2.connect(user='lindo')
+    generator = (
+        OrderedDict(zip([col.name for col in desc], convtypes(row)))
+        for row in cursor.fetchall()
+    )
 
+    if one:
+        for res in generator:
+            return res
 
+        return False
 
-    return db
-
-
-def execute_file(db, filename, kwargs=None):
-    path = os.path.join('sql', filename)
-
-    with open(path, 'r') as f:
-        sql = f.read()
-
-    execute(db, sql, kwargs)
-
-
-def execute(db, query, kwargs=None):
-    if kwargs is None:
-        kwargs = {}
-
-
-    import psycopg2
-    print
-    print 'SEND QUERY: {!r}'.format(query)
-    cursor = db.cursor()
-    cursor.execute(query, kwargs)
-
-
-    try:
-        results = cursor.fetchall()
-    except psycopg2.ProgrammingError:
-        results = None
-
-    print'GET RESULT: {!r}'.format(results)
-    print
-    cursor.close()    
-    return results
+    return generator

@@ -1,62 +1,45 @@
-from lindo.db import dblib
-from itertools import chain
+from lindo.lib.agg import Aggregators
 
-def get_events(start, end):
+aggregators = Aggregators
+
+
+class Counter(object):
+    def __init__(self):
+        pass
+
+    def setup(self):
+        """
+            CREATE TABLE IF NOT EXISTS counter (
+                id serial PRIMARY KEY,
+                name text,
+                counter_pos bigint default 0
+            );
+        """
+
+    def advance(self):
+        pass
+
+    def destroy(self):
+        pass
+
+
+@aggregators.add
+def event_count(db, event, first=False):
+    if first:
+        db.run('create table')
+
+
+def main():
     pass
 
 
-def start():
-    update_loop()
+def start(event_queue):
+    aggregates = agglib.getall()
+    update_loop(event_queue, aggregates)
 
 
-def init_aggregator(aggregator):
-    pass
-
-
-def set_agg(agg, id):
-    pass
-
-def update_loop(event_queue, aggregators):
-    while True:
-        event = event_queue.get()
-        for agg in aggregators:
-            process_event(event)
+def update_loop(event_queue, aggregates):
+    for event in event_queue:
+        for agg in aggregates:
+            agg.process_event(event)
             event_queue.task_complete()
-
-
-def process_event(aggregator, event):
-    event_pos = get_pos_event(event)
-    agg_pos = get_pos_agg(aggregator)
-
-    if agg_pos >= event_pos:
-        events = []
-
-    elif agg_pos + 1 != event_pos:
-
-        events = chain(
-            ,
-            [event]
-        )
-
-    for event in events:
-        aggregator(event)
-        agg_pos = get_pos_event(event)
-        set_pos_agg(agg_pos, agg_pos)
-
-
-def aggregate_advance(aggregator, destination_id):
-    get_pos_agg
-    events = get_events(agg_pos + 1, destination_id)
-
-    for event in events:
-
-
-def get_pos_event(event):
-    return event['id']
-
-
-def get_pos_agg(aggregator):
-    raise NotImplementedError('Not Implemented')
-
-def pos_agg_set(aggregator, value):
-    raise NotImplementedError('Not Implemented')

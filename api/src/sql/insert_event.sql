@@ -1,5 +1,4 @@
 INSERT INTO
-    event (type, payload)
-    VALUES (%(type)s, %(payload)s);
-
-COMMIT;
+    event (name, payload)
+    VALUES (%(name)s, %(payload)s)
+    RETURNING date, pos;
