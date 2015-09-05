@@ -1,4 +1,3 @@
-import lindo.db as dblib
 from psycopg2.extras import Json
 
 
@@ -18,24 +17,22 @@ class Event(object):
 
 
 class Events(object):
-    def __init__(self, db):
+    def __init__(self, db, on_event):
         self.db = db
+        self.on_event = on_event
 
     def append(self, event):
-        pos, timestamp = dblib.execute_file(
-            self.db,
-            'insert_event.sql',
-            {
-                'name': event.name,
-                'payload': Json(event.payload)
-            }
-        )[0]
-        event.pos = pos
-        event.timestamp = timestamp
+        params = {'name': event.name, 'payload': Json(event.payload)}
+
+        res = self.db.runfile('insert_event.sql', params, one=True)
+
+        event.pos = res['pos']
+        event.timestamp = res['date']
+
+        return event
 
     def getrange(self, start, end):
-        result = dblib.execute_file(
-            self.db,
+        result = self.db.runfile(
             'select_events.sql',
             {
                 'start': start,
@@ -44,14 +41,16 @@ class Events(object):
         )
         for e in result:
             yield Event(
-                pos=e[0],
-                date=e[1],
-                name=e[2],
-                payload=e[3]
+                pos=e['pos'],
+                date=e['date'],
+                name=e['name'],
+                payload=e['payload']
             )
 
     def put(self, name, payload=None):
         e = Event(name=name, payload=payload)
         self.append(e)
+        self.on_event(event=e, events=self)
         self.db.commit()
+
         return e

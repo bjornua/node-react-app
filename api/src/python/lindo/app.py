@@ -18,15 +18,15 @@ app.register_blueprint(commands, url_prefix='/api')
 
 @app.before_first_request
 def setup():
-    conn = db.connect()
-    db.execute_file(conn, 'create_tables.sql')
+    conn = db.Connection(user='lindo')
+    conn.runfile('create_tables.sql')
     conn.commit()
 
 
 @app.before_request
 def setup_request():
     from lindo.lib.event import Events
-    g.db = db.connect()
+    g.db = db.Connection(user='lindo')
     g.events = Events(g.db)
 
 
@@ -51,6 +51,6 @@ def site_map():
 
 @app.route('/event/latests/', methods=['GET'])
 def latests_event():
-    result = db.execute(g.db, 'select * from event order by id desc')
+    result = g.db.run('select * from event order by id desc')
 
     return debug_response(result)

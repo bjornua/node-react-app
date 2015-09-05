@@ -1,4 +1,32 @@
-import lindo.agglib as agglib
+from lindo.lib.agg import Aggregators
+
+aggregators = Aggregators
+
+
+class Counter(object):
+    def __init__(self):
+        pass
+
+    def setup(self):
+        """
+            CREATE TABLE IF NOT EXISTS counter (
+                id serial PRIMARY KEY,
+                name text,
+                counter_pos bigint default 0
+            );
+        """
+
+    def advance(self):
+        pass
+
+    def destroy(self):
+        pass
+
+
+@aggregators.add
+def event_count(db, event, first=False):
+    if first:
+        db.run('create table')
 
 
 def main():
