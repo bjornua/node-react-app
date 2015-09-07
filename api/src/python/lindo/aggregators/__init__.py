@@ -8,7 +8,4 @@ aggregators = {
 g = object()
 event_id = 4
 
-count = g.data.get('stats',  event_id)
-
-count.get('pageviews')
-
+count = g.query.get('stats',  event_id)
