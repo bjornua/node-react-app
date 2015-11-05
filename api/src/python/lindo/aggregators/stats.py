@@ -6,6 +6,7 @@ def db_get(db, event_type):
         one=True
     )
 
+
 def db_insert(db, event_type, counter):
     db.run(
         'INSERT into counter (event_type) VALUES (%(event_type)s)',
@@ -42,3 +43,7 @@ def advance(db, event):
         return
 
     db_update(db, event_type, count + 1)
+
+    return {
+        type: 'counted_event'
+    }
